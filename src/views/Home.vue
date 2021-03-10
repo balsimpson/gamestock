@@ -7,28 +7,38 @@
         class="uk-grid-small uk-grid-match uk-child-width-1-3@s uk-text-center"
         uk-grid
       >
-        <div v-for="result in searchResults" :key="result['1. symbol']">
-          <router-link to="/details">
+        <div v-for="result in searchResults" :key="result.symbol">
+          <router-link to="{name: 'Details'}">
             <div
               class="uk-card uk-card-default uk-card-small uk-card-body stock-card"
             >
-              <div class="stock-card-symbol">{{ result["1. symbol"] }}</div>
-              <div class="stock-card-name">{{ result["2. name"] }}</div>
+              <div class="stock-card-symbol">{{ result.symbol }}</div>
+              <div class="stock-card-name">{{ result.shortname }}</div>
               <div class="stock-card-region">{{ result["4. region"] }}</div>
               <div
                 class="uk-grid-collapse uk-margin-small-top uk-width-1-1 uk-flex"
                 uk-grid
               >
                 <div class="uk-width-1-4 stock-card-currency">
-                  {{ result["8. currency"] }}
+                  {{ result.exchange }}
                 </div>
 
                 <div class="uk-width-3-4 uk-text-right stock-card-type">
-                  {{ result["3. type"] }}
+                  {{ result.quoteType }}
                 </div>
               </div>
             </div>
           </router-link>
+        </div>
+      </div>
+
+      <div class="uk-grid-small uk-grid-match uk-child-width-1-2 uk-text-center" uk-grid>
+        <div v-for="item in searchNews" :key="item.uuid">
+          <div class="uk-card uk-card-default uk-card-body">
+            <a :href="item.link">{{ item.title }}</a><br>
+            {{ item.publisher }}<br>
+            {{new Date(item.providerPublishTime*1000).toLocaleString()}}
+          </div>
         </div>
       </div>
     </div>
@@ -40,6 +50,7 @@
 import { ref } from "vue";
 import BaseSearch from "@/components/BaseSearch.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
+import AV from "@/composables/alphaVantage";
 export default {
   name: "Home",
   components: {
@@ -48,16 +59,18 @@ export default {
   },
   setup() {
     const searchResults = ref([]);
+    const searchNews = ref([]);
     const doSearch = async (query) => {
       let res = await fetch(
-        `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=YS05GMVH1ELVKYEO`
+        `https://wrapapi.com/use/balsimpson/feeds/stockSearch/latest?query=${query}&wrapAPIKey=rnobhyu0QNyehnOCXtY1y7yatP4CkjKF`
       );
       let result = await res.json();
-      searchResults.value = result.bestMatches;
-      console.log(searchResults.value);
+      searchResults.value = result.quotes;
+      searchNews.value = result.news;
+      console.log(result);
     };
 
-    return { doSearch, searchResults };
+    return { doSearch, searchResults, searchNews };
   },
 };
 </script>
