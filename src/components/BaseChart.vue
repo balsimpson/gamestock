@@ -11,6 +11,9 @@ import { onMounted, ref } from "vue";
 import planetChartData from "@/chartdata.js";
 
 export default {
+  props: {
+    chartdata: Object
+  },
   setup() {
     const chart_data = planetChartData;
     

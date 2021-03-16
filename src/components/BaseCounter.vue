@@ -10,27 +10,32 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { ref } from "vue";
 export default {
   name: "BaseCounter",
   props: {
     header: String,
+    maxCount: Number,
   },
+  emits: ["count-change"],
   setup(props, { emit }) {
     const count = ref(0);
-
+    // console.log('max-count', props.maxCount);
     const countChange = () => {
       emit("count-change", count);
     };
+
     const stepUp = () => {
-      count.value++;
-      emit("count-change", count);
+      if (count.value < props.maxCount) {
+        count.value++;
+        emit("count-change", count);
+      }
     };
     const stepDown = () => {
       if (count.value > 0) {
         count.value--;
+        emit("count-change", count);
       }
-      emit("count-change", count);
     };
 
     return { count, stepUp, stepDown, countChange };
@@ -64,7 +69,7 @@ input[type="number"]::-webkit-outer-spin-button {
   outline: none;
   -webkit-appearance: none;
   background-color: transparent;
-  border: none;
+  /* border: none; */
   align-items: center;
   justify-content: center;
   width: 3rem;
@@ -72,8 +77,14 @@ input[type="number"]::-webkit-outer-spin-button {
   cursor: pointer;
   margin: 0;
   position: relative;
-  box-shadow: 0px 0px 1px #272727;
+  /* box-shadow: 0px 0px 1px #ffffff; */
+  border: 1px solid #3e5974;
+  /* box-shadow: 0px 0px 1px #3e5974; */
   border-radius: 50%;
+}
+
+.number-input button:active {
+  border: 2px solid #9eb2c5;
 }
 
 .number-input button:before,
@@ -83,7 +94,7 @@ input[type="number"]::-webkit-outer-spin-button {
   content: "";
   width: 1rem;
   height: 2px;
-  background-color: #212121;
+  background-color: #3e5974;
   transform: translate(-50%, -50%);
 }
 .number-input button.plus:after {
@@ -93,13 +104,21 @@ input[type="number"]::-webkit-outer-spin-button {
 .number-input input[type="number"] {
   font-family: sans-serif;
   max-width: 5rem;
-  padding: 0.5rem;
+  padding: 0.2rem;
+  margin: 0 0.2em;
   border: none;
-  border-width: 0 2px;
+  border-radius: 10px;
+  /* border-width: 0 2px; */
   font-size: 2rem;
   height: 3rem;
   font-weight: bold;
   text-align: center;
-  color: #3b3d3d;
+  color: #6a7d91;
+  background: transparent;
+}
+
+.number-input input[type="number"]:focus {
+  outline: none;
+  color: #90a6bd;
 }
 </style>
