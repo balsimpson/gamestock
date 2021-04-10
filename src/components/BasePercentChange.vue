@@ -1,17 +1,17 @@
 <template>
   <span
-    v-if="percentchange"
+    v-if="changeDisplay"
     class="percent-change uk-animation-fade"
     :class="{ 'uk-text-success': tendies, 'uk-text-danger': !tendies }"
   >
     <span v-if="tendies" uk-icon="triangle-up"></span>
     <span v-if="!tendies" uk-icon="triangle-down"></span>
-    <span>{{ percentchange }}%</span>
+    <span @click="showVal()">{{ changeDisplay }}</span>
   </span>
 </template>
 
 <script>
-import { ref, watchEffect } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 export default {
   name: "BasePercentChange",
   props: {
@@ -20,19 +20,49 @@ export default {
   },
   setup(props) {
     const percentchange = ref(0);
+    const valuechange = ref(0);
+    const showpercent = ref(true);
+    const changeDisplay = ref();
     const tendies = ref(false);
 
     const getPercentChange = () => {
       let diff = props.newVal - props.oldVal;
+
+      // console.log('diff', Math.abs(diff).toFixed(2), Number(Math.abs((diff * 100) / props.oldVal).toFixed(2)));
+
+      // valuechange.value = Math.abs(diff).toFixed(2);
+      valuechange.value = Math.abs(diff).toFixed(2);
       tendies.value = diff > 0 ? true : false;
-      let res = Math.abs((diff * 100) / props.oldVal).toFixed(2);
-      return Number(res);
+      // let res = Number(Math.abs((diff * 100) / props.oldVal).toFixed(2));
+      let res = (diff * 100) / props.oldVal;
+      // console.log('res', Math.abs(res));
+      return Math.abs(res).toFixed(2);
     };
+
+    const showVal = () => {
+      // console.log(showpercent.value, props.oldVal, props.newVal);
+      if (showpercent.value && Number(percentchange.value)) {
+        // console.log(showpercent.value, Number(percentchange.value))
+        changeDisplay.value = percentchange.value + '%';
+        showpercent.value = !showpercent.value;
+      } else {
+        changeDisplay.value = valuechange.value;
+        showpercent.value = !showpercent.value;
+      }
+    }
+
+    onMounted(() => {
+      showVal();
+    })
 
     watchEffect(() => {
       percentchange.value = getPercentChange();
+      if (Number(percentchange.value)) {
+        changeDisplay.value = percentchange.value + '%';
+      }
     });
-    return { percentchange, tendies };
+
+    return { percentchange, valuechange, changeDisplay, tendies, showVal };
   },
 };
 </script>
@@ -44,5 +74,6 @@ export default {
   margin-left: 4px;
   font-size: 12px;
   padding: 2px 6px;
+  cursor: pointer;
 }
 </style>

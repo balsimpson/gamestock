@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 export default {
   name: "BaseCounter",
   props: {
@@ -20,7 +20,7 @@ export default {
   emits: ["count-change"],
   setup(props, { emit }) {
     const count = ref(0);
-    // console.log('max-count', props.maxCount);
+    // console.log(props.maxCount)
     const countChange = () => {
       emit("count-change", count);
     };
@@ -37,6 +37,14 @@ export default {
         emit("count-change", count);
       }
     };
+
+    onMounted(() => {
+      UIkit.util.on("#modal", "beforeshow", function () {
+        // do something
+        count.value = 0;
+        emit("count-change", count);
+      });
+    })
 
     return { count, stepUp, stepDown, countChange };
   },

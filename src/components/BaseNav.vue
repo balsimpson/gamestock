@@ -1,0 +1,175 @@
+<template>
+  <nav class="uk-flex uk-flex-between uk-flex-middle uk-margin-medium-top">
+    <router-link to="/dashboard" style="width: 300px;">
+      <img
+        src="../assets/paperhand_logo.png"
+        alt=""
+        style="width: 100%; height: auto; object-fit: contain"
+      />
+    </router-link>
+
+    <div class="uk-animation-fade" style="z-index: 2">
+      <div class="user-profile">
+        <img :src="user.photoURL" alt="" style="" />
+      </div>
+
+      <div
+        class="nav-dropdown"
+        uk-dropdown="pos: bottom-right; offset: 10;mode: click"
+      >
+        <ul class="uk-nav uk-dropdown-nav uk-text-left">
+          <div class="arrow-up"></div>
+          <li>
+            <div class="profile-name-header">Signed in as</div>
+            <div class="profile-name">{{ user.name }}</div>
+          </li>
+
+          <li class="nav-dropdown-item">
+            <router-link to="/profile">
+              <FontAwesomeIcon icon="user" />
+              <span
+                class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
+              >
+                Profile
+              </span>
+            </router-link>
+          </li>
+          <li @click="btnHandler" class="nav-dropdown-item">
+            <FontAwesomeIcon icon="bell" />
+            <span
+              class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
+            >
+              All Trades
+            </span>
+          </li>
+          <li @click="btnHandler" class="nav-dropdown-item">
+            <FontAwesomeIcon icon="comment-dots" />
+            <span
+              class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
+            >
+              Feedback
+            </span>
+          </li>
+          <li @click="btnHandler" class="nav-dropdown-item">
+            <FontAwesomeIcon icon="sign-out-alt" />
+            <span
+              class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
+            >
+              SIGN OUT
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script>
+import { useStore } from "vuex";
+import FontAwesomeIcon from "@/components/FontAwesomeIcon";
+import { ref, watchEffect } from "vue";
+export default {
+  name: "BaseNav",
+  props: ["user"],
+  emits: ["itemClick"],
+  components: {
+    FontAwesomeIcon,
+  },
+  setup(props, { emit }) {
+    const store = useStore();
+    const user1 = ref({});
+
+    const btnHandler = (e) => {
+      let val = e.target.innerText.trim();
+      emit("itemClick", val);
+    };
+
+    watchEffect(() => {
+      user1.value = store.state.userProfile;
+      // console.log(user1.value, store.state.userProfile);
+    });
+
+    return { btnHandler };
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+.uk-dropdown {
+  // box-shadow: none;
+  min-width: 160px;
+}
+.nav-dropdown {
+  border-radius: 10px 10px 10px 10px;
+  background: $theme1-primary-800;
+  color: $theme1-primary-100;
+  padding: 0;
+  /* color: #ffffff; */
+  // box-shadow: none;
+}
+
+.nav-dropdown-item {
+  // border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+}
+
+.nav-dropdown-item:hover {
+  background: $theme1-primary-500;
+  color: $light-contrast-300;
+  border-top: 1px solid $theme1-primary-500;
+  // border-radius: 10px 10px 10px 10px;
+}
+
+.nav-dropdown-item:is(:last-child):hover {
+  border-radius: 0px 0px 10px 10px;
+}
+
+li:not(:first-child) {
+  padding: 6px 14px;
+}
+.arrow-up {
+  position: absolute;
+  top: -6px;
+  right: 16px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+
+  border-bottom: 8px solid $theme1-primary-800;
+}
+
+.user-profile {
+  cursor: pointer;
+
+  img {
+    width: 36px;
+    margin-right: 6px;
+    border: 2px solid #787878;
+    border-radius: 50%;
+    transition: border 0.2s ease-out;
+
+    &:hover {
+      border: 2px solid $theme1-danger-800;
+      background: rgba(255, 0, 0, 0.2);
+    }
+  }
+}
+
+.profile-name-header {
+  margin-top: 10px;
+  font-weight: 400;
+  font-size: 8px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+</style>

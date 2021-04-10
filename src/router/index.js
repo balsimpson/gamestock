@@ -22,6 +22,14 @@ const routes = [
     }
   },
   {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/details/:id',
     name: 'Details',
     props: true,
@@ -37,14 +45,14 @@ const router = createRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
 
-//   if (requiresAuth && !auth.currentUser) {
-//     next('/')
-//   } else {
-//     next()
-//   }
-// })
+  if (requiresAuth && !auth.currentUser) {
+    next('/')
+  } else {
+    next()
+  }
+})
 
 export default router

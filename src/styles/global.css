@@ -1,0 +1,37 @@
+.accent {
+  color: #ef9f24;
+}
+
+.light {
+  background-color: #e6e6e6;
+  color: #202a3b;
+}
+
+.dark {
+  background-color: #cec3b4;
+  color: #838d87;
+}
+
+.dashboard-header {
+  padding: 20px;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+}
+
+.uk-text-success {
+  color: #189c6c !important;
+}
+
+.uk-notification-message {
+  position: relative;
+  padding: 15px;
+  background: #333;
+  border-radius: 10px;
+  color: #838d87;
+  font-size: .8em;
+  line-height: 1;
+  cursor: pointer;
+}
+/*# sourceMappingURL=global.css.map */

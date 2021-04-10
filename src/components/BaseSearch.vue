@@ -10,7 +10,7 @@
         :placeholder="placeholder"
       />
     </form>
-    <!-- <p v-if="query">{{ displayQuery }}</p> -->
+    <p v-if="query">{{ displayQuery }}</p>
   </div>
 </template>
 
@@ -25,6 +25,7 @@ export default {
     const query = ref("");
     let timeoutRef = null;
     const debouncedValue = ref("");
+    const displayQuery = ref("");
 
     const emitSearch = () => {
       emit("search-query", query.value);
@@ -41,14 +42,15 @@ export default {
       }, 800);
     };
 
-    return { query, debounceListener };
+    return { query, debounceListener, displayQuery };
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "../styles/global.scss";
 .search-bar {
-  border: 1px solid #4b5a6c;
+  border: 1px solid;
   border-radius: 50px;
   transition: border 0.2s;
   text-align: center;
@@ -56,6 +58,6 @@ export default {
   margin-bottom: 20px;
 }
 .search-bar:focus {
-  border: 1px solid #a3b2c3;
+  border: 1px solid $light-accent-200;
 }
 </style>

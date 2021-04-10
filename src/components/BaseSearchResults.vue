@@ -1,23 +1,29 @@
 <template>
   <!-- <router-link :to="{name: 'Details', params: { id: result.symbol}}"> -->
   <div
+  v-if="results"
     class="uk-grid-small uk-grid-match uk-child-width-1-3@s uk-text-center"
     uk-grid
   >
     <div v-for="result in results" :key="result.symbol">
-      <a @click="getMarketprice(result)" href="#modal-buy-search" uk-toggle>
+      <a @click="btnHandler(result)">
         <div
-          class="uk-card uk-card-default uk-card-small uk-card-body stock-card"
+          class="uk-card uk-card-default uk-card-small uk-card-body search-card"
         >
-          <div class="stock-card-symbol">{{ result.symbol }}</div>
-          <div class="stock-card-name">{{ result.shortname }}</div>
-          <div class="stock-card-region">{{ result["4. region"] }}</div>
-          <div class="uk-flex uk-flex-between uk-width-expand">
-            <div class="uk-width-1-4 stock-card-exchange">
-              {{ result.exchange }}
+          <div class="search-card-symbol">{{ result.symbol }}</div>
+          <div class="search-card-name">{{ result.shortname }}</div>
+
+          <div
+            class="uk-flex uk-flex-middle uk-margin-top uk-flex-between uk-width-expand"
+          >
+            <div>
+              <div class="search-card-exchange">
+                {{ result.exchange }}
+              </div>
+              <div class="search-card-exchange-title">exchange</div>
             </div>
 
-            <div class="uk-width-3-4 uk-text-right stock-card-type">
+            <div class="search-card-type">
               {{ result.quoteType }}
             </div>
           </div>
@@ -25,63 +31,7 @@
       </a>
     </div>
   </div>
-
-  <div class="" id="modal-buy-search" uk-modal>
-    <div class="uk-modal-dialog uk-margin-auto-vertical modal">
-      <button class="uk-modal-close-default" type="button" uk-close></button>
-
-      <div class="uk-modal-header modal uk-flex uk-flex-middle">
-        <div class="uk-modal-title uk-margin-large-right">
-          <em>{{ stonk.symbol }}</em>
-        </div>
-        <div>
-          <div class="header-price">
-            <span class="header-price__currency">$</span
-            ><span>{{ stonk.market_price }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="uk-modal-body">
-        <div class="uk-text-center">
-          <BaseCounter
-            v-on:count-change="countChange($event)"
-            header="shares to buy"
-            :maxCount="maxCount"
-          />
-        </div>
-
-         
-        <div class="uk-text-center uk-text-large">
-          <div class="uk-text-small uk-text-uppercase">{{ amountHeader }}</div>
-          <span class="uk-text-muted uk-text-light">$</span>{{ amount }}
-        </div>
-      </div>
-
-      <div class="uk-modal-footer uk-flex uk-flex-between uk-flex-middle modal">
-        <div>
-          <div class="uk-flex uk-flex-middle" style="font-size: 12px">
-            <i class="fas fa-wallet"></i
-            ><span style="margin-left: 4px; text-transform: uppercase"
-              >Wallet</span
-            >
-          </div>
-          <div class="wallet-amount">
-            <span class="wallet-amount__currency">$</span
-            >{{ balance.toLocaleString() }}
-          </div>
-        </div>
-        <div v-if="needConfirmation">
-          <div>are you sure?</div>
-          <div class="uk-flex uk-flex-between">
-            <button class="btn-confirmation" href="#">yes</button>
-            <button class="btn-confirmation" href="#">no</button>
-          </div>
-        </div>
-        <button @click="buyStock" class="btn-trade" type="button">Buy</button>
-      </div>
-    </div>
-  </div>
+  <div class="uk-width-expand">{{ displayMsg }}</div>
 </template>
 
 <script>
@@ -89,17 +39,24 @@ import { ref, reactive, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import stocks from "@/composables/fetchStocks";
 import BaseCounter from "@/components/BaseCounter";
+import BaseCard from "@/components/BaseCard";
 export default {
   components: {
     BaseCounter,
+    BaseCard
   },
-  props: ["results"],
-  setup() {
+  props: ["results", "displayMsg"],
+  emits: ["showModal"],
+  setup(props, { emit }) {
     const store = useStore();
     const symbol = ref("");
     const amountHeader = ref("");
-    const amount = computed(() => (stonk.market_price * count.value).toFixed(2));
+    const amount = computed(() =>
+      (stonk.market_price * count.value).toFixed(2)
+    );
     const count = ref(0);
+
+    // console.log('search results', props.results);
     // const price = ref("0");
     // const marketprice = ref(0);
     const needConfirmation = ref(false);
@@ -122,6 +79,7 @@ export default {
     const maxCount = computed(() => {
       return parseInt(wallet.value / stonk.market_price);
     });
+
     const getMarketprice = async (data) => {
       const result = await stocks.details(data.symbol);
       stonk.name = data.shortname;
@@ -133,9 +91,19 @@ export default {
       stonk.exchangeName = result.meta.exchangeName;
       stonk.exchangeTimezone = result.meta.exchangeTimezoneName;
       stonk.regularMarketTime = result.meta.regularMarketTime;
-      stonk.previousClose = result.meta.previousClose;
-      
-      console.log('stonk', stonk);
+      stonk.previousClose = result.meta.previousClose || 'not available';
+
+      console.log("stonk", stonk);
+    };
+
+    const btnHandler = async (result) => {
+      console.log("clicked", result);
+      let data = {
+        type: "buy",
+        stonk: stonk,
+      };
+      emit("showModal", data);
+      await getMarketprice(result);
     };
 
     const buyStock = () => {
@@ -144,9 +112,9 @@ export default {
       let data = {
         stonk: stonk,
         wallet: {
-          wallet: balance.value
-        }
-      }
+          wallet: balance.value,
+        },
+      };
       store.dispatch("buyStonk", data);
     };
 
@@ -175,12 +143,22 @@ export default {
       wallet,
       maxCount,
       needConfirmation,
+      btnHandler,
     };
   },
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
+a:hover {
+  text-decoration: none;
+}
+
+.router-link-active {
+  text-decoration: none;
+}
 .btn-confirmation {
   background: transparent;
   border: 1px solid #6a7d91;
@@ -190,10 +168,45 @@ export default {
   padding: 4px 10px;
   font-size: 12px;
 }
+.search-card {
+  background: $light-accent-200;
+  color: $light-contrast-300;
+  border-radius: 10px;
+  transition: background 0.2s ease-out;
 
-.stock-card-exchange {
-  border: 1px solid;
+  &:hover {
+    background: $light-accent-100;
+  }
+}
+.search-card-symbol {
+  font-weight: 600;
+  // color: $color-accent;
+}
+
+.search-card-name {
+  font-weight: 400;
   font-size: 12px;
-  line-height: 2;
+}
+
+.search-card-exchange {
+  /* border: 1px solid; */
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1;
+  text-align: left;
+}
+
+.search-card-exchange-title {
+  /* border: 1px solid; */
+  font-weight: 300;
+  font-size: 8px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.search-card-type {
+  /* border: 1px solid; */
+  font-size: 12px;
+  line-height: 1;
 }
 </style>

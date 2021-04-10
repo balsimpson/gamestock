@@ -5,6 +5,7 @@ import firebase from "firebase/app";
 // Add the Firebase services that you want to use
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/analytics";
 // import "firebase/storage";
 
 import store from "../store";
@@ -23,6 +24,7 @@ const firebaseService = firebase.initializeApp(config);
 
 const db = firebaseService.firestore();
 const auth = firebaseService.auth();
+const analytics = firebaseService.analytics();
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -32,47 +34,54 @@ const trades = db.collection("trades");
 
 const fb = {
   currentUser: "",
-  async getAllUsers() {
-    let itemRef = db.collection("artisans");
-    // let getOptions = {
-    // 	source: 'cache'
-    // };
-    let users = [];
-    const snapshot = await itemRef.get();
-    snapshot.forEach(doc => {
-      users.push(doc.data());
-    });
-    console.log("artisans", users);
-    return users;
-  },
-  async getAllProducts() {
-    let itemRef = db.collection("items");
-    // let getOptions = {
-    // 	source: 'cache'
-    // };
-    let products = [];
-    const snapshot = await itemRef.get();
-    snapshot.forEach(doc => {
-      products.push(doc.data());
-    });
-    return products;
-  },
-  // Users
-  async checkUserExists(user) {},
+  // async getAllUsers() {
+  //   let itemRef = db.collection("artisans");
+  //   // let getOptions = {
+  //   // 	source: 'cache'
+  //   // };
+  //   let users = [];
+  //   const snapshot = await itemRef.get();
+  //   snapshot.forEach(doc => {
+  //     users.push(doc.data());
+  //   });
+  //   console.log("artisans", users);
+  //   return users;
+  // },
+  // async getAllProducts() {
+  //   let itemRef = db.collection("items");
+  //   // let getOptions = {
+  //   // 	source: 'cache'
+  //   // };
+  //   let products = [];
+  //   const snapshot = await itemRef.get();
+  //   snapshot.forEach(doc => {
+  //     products.push(doc.data());
+  //   });
+  //   return products;
+  // },
+  // // Users
+  // async checkUserExists(user) {},
   async addUser(user) {
-    let itemRef = db.collection("users").doc(user.email);
+    let itemRef = apes.doc(user.email);
     return await itemRef.set(user);
   },
-  async updateUser(user) {
-    let itemRef = db.collection("users").doc(user.email);
-    return await itemRef.update(user);
+
+  /**
+   * @param {object} data object with data
+   * @param {string} data.email user email
+   * @param { capital: true } data.updateData data to update
+   * @returns
+   */
+  async updateUser(data, userEmail) {
+    let itemRef = apes.doc(userEmail);
+    return await itemRef.update(data);
   },
-  async deleteUser(user_id) {
-    let itemRef = db.collection("users").doc(user_id);
+  async deleteUser(userEmail) {
+    let itemRef = apes.doc(userEmail);
     return await itemRef.delete();
   },
 
-  // Update Walet
+  // Update Wallet
   async updateWallet(data, userEmail) {
     console.log(data, userEmail);
     let itemRef = apes.doc(userEmail);
@@ -80,7 +89,31 @@ const fb = {
   },
 
   // Items
-  async addItem(item, user_id) {
+
+  // Adding or updating items should be logged to trades
+  async batchWrite(data) {
+    // Get a new write batch
+    const batch = db.batch();
+
+    // add|update item
+
+
+    let trade = {
+      type: "buy | sell",
+      date: Date.now(),
+      symbol: "symbol",
+      name: "name",
+      shares: "share count",
+      price: "market price"
+    }
+    // log in trades
+    batch.add(trades, data);
+
+    // Commit the batch
+    await batch.commit();
+  },
+
+  async addItem(item, userEmail) {
     let data = {
       name: item.name,
       symbol: item.symbol,
@@ -95,54 +128,81 @@ const fb = {
       previousClose: item.previousClose
     };
     console.log("itemref", data);
-    let itemRef = apes
-      .doc(user_id)
-      .collection("portfolio")
-      .doc(item.symbol);
-    return await itemRef.set(data);
+    let itemRef = apes.doc(userEmail).collection("portfolio");
+    return await itemRef.add(data);
   },
-  async updateItem(data, itemId, user_id) {
-    let itemRef = apes
-      .doc(user_id)
-      .collection("portfolio")
-      .doc(itemId);
-    return await itemRef.update(data);
+
+  // Add to All trades
+  async logTrade(item, tradeType, userUid, userName) {
+    let data = {
+      name: item.name,
+      symbol: item.symbol,
+      type: item.type,
+      bought_price: item.bought_price,
+      market_price: item.market_price,
+      currency: item.currency,
+      shares: item.shares,
+      date: Date.now(),
+      exchangeName: item.exchangeName,
+      regularMarketTime: item.regularMarketTime,
+      previousClose: item.previousClose,
+      tradeType: tradeType,
+      userUid: userUid,
+      userName: userName
+    };
+    console.log("traderef", data);
+    return await trades.add(data);
   },
-  async deleteItem(data, itemId, user_id) {
+
+  async updateItem(data, userEmail) {
+    if (data.shares > 0) {
+      let itemRef = apes
+        .doc(userEmail)
+        .collection("portfolio")
+        .doc(data.id);
+      return await itemRef.update(data);
+    } else {
+      // delete the entry
+      let itemRef = apes
+        .doc(userEmail)
+        .collection("portfolio")
+        .doc(data.id);
+      return await itemRef.delete();
+    }
+  },
+
+  async deleteItem(data, itemId, userEmail) {
     let itemRef = apes
-      .doc(user_id)
+      .doc(userEmail)
       .collection("portfolio")
       .doc(itemId);
     return await itemRef.delete(data);
   },
+  
   // auth
   async signIn(inputEmail, inputPassword) {
-    let user = await auth.signInWithEmailAndPassword(inputEmail, inputPassword);
-    console.log(user);
-    return user;
+    try {
+      let user = await auth.signInWithEmailAndPassword(
+        inputEmail,
+        inputPassword
+      );
+      // console.log(firebase.auth().currentUser.metadata.creationTime, firebase.auth().currentUser.metadata.lastSignInTime)
+      checkUser();
+      console.log(user);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  // get new user status
+  async checkUser() {
+    let creationTime = await auth.currentUser;
+    console.log("creationTime", creationTime);
   },
   async signOut() {
     let res = await auth.signOut();
     return res;
   },
-  async checkLogin() {
-    // let user = firebaseService.auth().currentUser;
-    // console.log('user login check', user);
-    // return user;
-    // const store = useStore();
-    // auth.onAuthStateChanged((user) => {
-    // 	if (user) {
-    // 		console.log('user is logged in', user);
-    // 		store.commit('addUser', user.email);
-    // 		console.log('store', store.getters.getUser);
-    // 		this.currentUser = user.email;
-    // 		return user.email;
-    // 	} else {
-    // 		console.log('user not logged in');
-    // 		return null;
-    // 	}
-    // })
-  },
+
   // storage
   async uploadToStorage(fileToUpload) {
     console.log("file", fileToUpload);
