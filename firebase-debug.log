@@ -1,0 +1,73 @@
+[debug] [2021-04-13T05:45:55.932Z] ----------------------------------------------------------------------
+[debug] [2021-04-13T05:45:55.933Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2021-04-13T05:45:55.934Z] CLI Version:   9.9.0
+[debug] [2021-04-13T05:45:55.934Z] Platform:      darwin
+[debug] [2021-04-13T05:45:55.934Z] Node Version:  v14.16.0
+[debug] [2021-04-13T05:45:55.936Z] Time:          Tue Apr 13 2021 11:15:55 GMT+0530 (India Standard Time)
+[debug] [2021-04-13T05:45:55.936Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-04-13T05:45:55.939Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2021-04-13T05:45:55.956Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-04-13T05:45:55.957Z] > authorizing via signed-in user (tinkr.simpson@gmail.com)
+[debug] [2021-04-13T05:45:55.957Z] [iam] checking project paperhand for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-04-13T05:45:55.958Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-04-13T05:45:55.958Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-13T05:45:56.116Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Tue, 13 Apr 2021 05:45:56 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:45:56.162Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/paperhand:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-04-13T05:45:56.772Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2021-04-13T05:45:56.773Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2021-04-13T05:45:57.434Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Tue, 13 Apr 2021 05:45:57 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1141","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:45:57.437Z] > refreshing access token with scopes: []
+[debug] [2021-04-13T05:45:57.437Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-13T05:45:57.577Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","date":"Tue, 13 Apr 2021 05:45:57 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:45:57.623Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/paperhand [none]
+[debug] [2021-04-13T05:45:57.999Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/paperhand 200
+[debug] [2021-04-13T05:45:58.000Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/paperhand {"projectId":"paperhand","projectNumber":"882595245751","displayName":"paperhand","name":"projects/paperhand","resources":{"hostingSite":"paperhand","storageBucket":"paperhand.appspot.com","locationId":"us-central"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'paperhand'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-04-13T05:45:58.007Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-04-13T05:45:58.008Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-13T05:45:58.127Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Tue, 13 Apr 2021 05:45:58 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:45:58.175Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/paperhand/versions  
+ {"config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2021-04-13T05:47:14.102Z] Error: connect ETIMEDOUT 216.58.200.138:443
+    at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1146:16)
+[error] 
+[error] Error: Server Error. connect ETIMEDOUT 216.58.200.138:443
+[debug] [2021-04-13T05:47:47.754Z] ----------------------------------------------------------------------
+[debug] [2021-04-13T05:47:47.755Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2021-04-13T05:47:47.755Z] CLI Version:   9.9.0
+[debug] [2021-04-13T05:47:47.756Z] Platform:      darwin
+[debug] [2021-04-13T05:47:47.756Z] Node Version:  v14.16.0
+[debug] [2021-04-13T05:47:47.757Z] Time:          Tue Apr 13 2021 11:17:47 GMT+0530 (India Standard Time)
+[debug] [2021-04-13T05:47:47.757Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-04-13T05:47:47.764Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-04-13T05:47:47.764Z] > authorizing via signed-in user (tinkr.simpson@gmail.com)
+[debug] [2021-04-13T05:47:47.764Z] [iam] checking project paperhand for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-04-13T05:47:47.766Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/paperhand:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-04-13T05:47:49.031Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Tue, 13 Apr 2021 05:47:49 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=1156","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:47:49.036Z] > refreshing access token with scopes: []
+[debug] [2021-04-13T05:47:49.036Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-13T05:47:49.167Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Tue, 13 Apr 2021 05:47:49 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:47:49.220Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/paperhand [none]
+[debug] [2021-04-13T05:47:49.744Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/paperhand 200
+[debug] [2021-04-13T05:47:49.744Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/paperhand {"projectId":"paperhand","projectNumber":"882595245751","displayName":"paperhand","name":"projects/paperhand","resources":{"hostingSite":"paperhand","storageBucket":"paperhand.appspot.com","locationId":"us-central"},"state":"ACTIVE"}
+[info] 
+[info] === Deploying to 'paperhand'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2021-04-13T05:47:49.750Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-04-13T05:47:49.750Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-13T05:47:49.884Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Tue, 13 Apr 2021 05:47:50 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-13T05:47:49.933Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/paperhand/versions  
+ {"config":{},"labels":{"deployment-tool":"cli-firebase"}}

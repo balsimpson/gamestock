@@ -1,5 +1,5 @@
 <template>
-  <div class="uk-margin-small-bottom uk-text-small uk-text-uppercase">
+  <div class="counter-header">
     {{ header }}
   </div>
   <div class="number-input">
@@ -51,7 +51,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "../styles/global.scss";
+
+.counter-header {
+  text-transform: uppercase;
+  padding-bottom: 20px;
+  color: $theme1-primary-600;
+}
+
 input[type="number"] {
   -webkit-appearance: textfield;
   -moz-appearance: textfield;
@@ -86,13 +94,13 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
   position: relative;
   /* box-shadow: 0px 0px 1px #ffffff; */
-  border: 1px solid #3e5974;
+  border: 1px solid $theme1-primary-700;
   /* box-shadow: 0px 0px 1px #3e5974; */
   border-radius: 50%;
 }
 
 .number-input button:active {
-  border: 2px solid #9eb2c5;
+  border: 2px solid $theme1-primary-400;
 }
 
 .number-input button:before,
@@ -102,7 +110,7 @@ input[type="number"]::-webkit-outer-spin-button {
   content: "";
   width: 1rem;
   height: 2px;
-  background-color: #3e5974;
+  background-color: $theme1-primary-600;
   transform: translate(-50%, -50%);
 }
 .number-input button.plus:after {
@@ -121,12 +129,12 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 3rem;
   font-weight: bold;
   text-align: center;
-  color: #6a7d91;
+  color: $theme1-primary-400;
   background: transparent;
 }
 
 .number-input input[type="number"]:focus {
   outline: none;
-  color: #90a6bd;
+  color: $theme1-primary-500;
 }
 </style>

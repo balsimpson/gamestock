@@ -10,6 +10,7 @@ import FontAwesomeIcon from "@/components/FontAwesomeIcon";
 import { ref } from "@vue/reactivity";
 import { computed, onMounted } from "@vue/runtime-core";
 export default {
+  props: ["message"],
   components: {
     FontAwesomeIcon,
   },
@@ -17,22 +18,23 @@ export default {
   setup(props, { emit }) {
     const loadingMsg = ref("");
     const icon = ref("");
+
     onMounted(() => {
       icon.value = randomItem(loadingIcons);
       loadingMsg.value = randomItem(loadingMsgSimCity);
 
       setTimeout(() => {
         loadingMsg.value = randomItem(loadingMsgSimCity);
-      }, 2000);
+      }, 1000);
 
       setTimeout(() => {
         icon.value = "check-circle";
-        loadingMsg.value = "Transaction complete";
-      }, 4000);
+        loadingMsg.value = props.message;
+      }, 3000);
 
       setTimeout(() => {
         emit("msgDone");
-      }, 5000);
+      }, 6000);
     });
 
     return { loadingMsg, icon };
@@ -480,9 +482,9 @@ const randomItem = (arrayOfItems) => {
   font-size: 1.4em;
   padding: 60px 60px 60px 60px;
   height: 100px;
-  background: $light-accent-200;
-  border-radius: 0px;
-  color: $light-contrast-300;
+  background: $theme1-primary-800;
+  border-radius: 20px;
+  color: $theme1-primary-600;
 
   &-txt {
     padding-top: 20px;

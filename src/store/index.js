@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import { fb, auth, provider, apes, trades } from "@/composables/useFirebase";
 import router from "@/router/index";
+import { notify } from "@/composables/useUtils";
 
 let userObserver;
 let portfolioObserver;
@@ -85,55 +86,23 @@ const store = createStore({
       const doc = apes.doc(user.email);
 
       try {
-        userObserver = doc.onSnapshot(
-          async doc => {
-            let details = doc.data();
-  
-            if (details) {
-              // console.log(details);
-              commit("setWallet", details.wallet);
-              commit("setIsGrouped", details.isGrouped);
-            } else {
-              console.log("new user");
-            }
+        userObserver = doc.onSnapshot(async doc => {
+          let details = doc.data();
+
+          if (details) {
+            // console.log(details);
+            commit("setWallet", details.wallet);
+            commit("setIsGrouped", details.isGrouped);
+          } else {
+            console.log("no details", doc.data());
           }
-        );
-        
+        }, err => {
+          console.log(`Encountered error: ${err}`);
+        });
       } catch (error) {
-        console.log(error.message);
+        console.log('error:', error);
       }
     },
-
-    // async userObserverHandler({ commit }, user) {
-    //   const doc = apes.doc(user.email);
-    //   userObserver = doc.onSnapshot(
-    //     async doc => {
-    //       console.log(`Received doc snapshot: ${doc}`, doc.data());
-    //       let details = doc.data();
-
-    //       if (details) {
-    //         // console.log(details);
-    //         commit("setWallet", details.wallet);
-    //         commit("setIsGrouped", details.isGrouped);
-    //       } else {
-    //         console.log("new user");
-
-    //         let newuser = {
-    //           email: user.email,
-    //           name: user.name,
-    //           wallet: 10000,
-    //           joined: Date.now()
-    //         };
-    //         // add user
-    //         await fb.addUser(newuser);
-    //         commit("setWallet", 10000);
-    //       }
-    //     },
-    //     err => {
-    //       console.log(`Encountered error: ${err}`);
-    //     }
-    //   );
-    // },
 
     async portfolioObserverHandler({ commit }, user) {
       const docs = apes
@@ -142,34 +111,36 @@ const store = createStore({
         .orderBy("date", "desc");
 
       let portfolio = [];
-      portfolioObserver = docs.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-          // console.log(`Received doc snapshot: ${change.doc}`, change.doc.data());
-          if (change.type === "added") {
-            let doc = change.doc.data();
-            doc.id = change.doc.id;
-            portfolio.push(doc);
-          }
-          if (change.type === "modified") {
-            let doc = change.doc.data();
-            doc.id = change.doc.id;
-            console.log("Modified: ", doc);
-            commit("setPortfolioUpdate", doc);
-          }
-          if (change.type === "removed") {
-            let doc = change.doc.data();
-            doc.id = change.doc.id;
-            console.log("Removed: ", doc);
-            commit("setPortfolioDelete", doc);
-          }
-        })
 
-        // console.log(portfolio);
-        commit("setPortfolio", portfolio);
-      }),
-      err => {
-        console.log(`Encountered error: ${err}`);
-      };
+      try {
+        portfolioObserver = docs.onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(change => {
+            // console.log(`Received doc snapshot: ${change.doc}`, change.doc.data());
+            if (change.type === "added") {
+              let doc = change.doc.data();
+              doc.id = change.doc.id;
+              portfolio.push(doc);
+            }
+            if (change.type === "modified") {
+              let doc = change.doc.data();
+              doc.id = change.doc.id;
+              console.log("Modified: ", doc);
+              commit("setPortfolioUpdate", doc);
+            }
+            if (change.type === "removed") {
+              let doc = change.doc.data();
+              doc.id = change.doc.id;
+              console.log("Removed: ", doc);
+              commit("setPortfolioDelete", doc);
+            }
+          });
+
+          // console.log(portfolio);
+          commit("setPortfolio", portfolio);
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
     },
 
     async tradeObserverHandler({ commit, getters }, user) {
@@ -178,23 +149,26 @@ const store = createStore({
         .orderBy("date", "desc");
 
       let alltrades = [];
-      tradeObserver = docs.onSnapshot(snapshot => {
-        snapshot.docChanges().forEach(change => {
-          console.log(
-            `Received doc snapshot: ${change.doc}`,
-            change.doc.data()
-          );
-          if (change.type === "added") {
-            let doc = change.doc.data();
-            doc.id = change.doc.id;
-            alltrades.push(doc);
-          }
-        }),
-        // console.log(portfolio);
-        commit("setTrades", alltrades);
-      }),err => {
-        console.log(`Encountered error: ${err}`);
-      };
+      
+      try {
+        tradeObserver = docs.onSnapshot(snapshot => {
+          snapshot.docChanges().forEach(change => {
+            // console.log(
+            //   `Received doc snapshot: ${change.doc}`,
+            //   change.doc.data()
+            // );
+            if (change.type === "added") {
+              let doc = change.doc.data();
+              doc.id = change.doc.id;
+              alltrades.push(doc);
+            }
+          }),
+            // console.log(portfolio);
+            commit("setTrades", alltrades);
+        }) 
+      } catch (error) {
+        console.log(error.message);
+      }
     },
 
     async userLoggedIn({ commit, dispatch }, user) {
@@ -210,10 +184,19 @@ const store = createStore({
           joined: Date.now()
         };
         let res = await fb.addUser(newuser);
-        console.log("res", res);
+
+        // notify
+        let msg = `Hi ${user.name.split(' ')[0]}! Welcome to Paperhand.`
+        notify(msg, "success");
+
         commit("setUserProfile", user);
       } else {
         console.log("store NOT new user");
+
+        // notify
+        let msg = `Hi ${user.name.split(' ')[0]}! Welcome back.`
+        notify(msg, "success");
+
         commit("setUserProfile", user);
       }
 
@@ -229,6 +212,7 @@ const store = createStore({
       console.log("stonk", data.stonk);
       let res = await fb.addItem(data.stonk, getters.getUser.email);
       await fb.updateWallet(data.wallet, getters.getUser.email);
+      
       await fb.logTrade(
         data.stonk,
         "buy",

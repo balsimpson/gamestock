@@ -210,11 +210,11 @@ $theme-border-dark: $theme1-primary-800;
 .uk-notification-message {
   position: relative;
   padding: 15px;
-  background: #333;
+  background: $theme1-primary-800;
   border-radius: 10px;
-  color: $light-primary-200;
+  color: $theme1-primary-200;
   font-size: 0.8em;
-  line-height: 1;
+  line-height: 1.2;
   cursor: pointer;
 }
 
@@ -233,22 +233,4 @@ $theme-border-dark: $theme1-primary-800;
 .uk-table-divider > :not(:first-child) > tr,
 .uk-table-divider > tr:not(:first-child) {
   border-top: 1px solid #d8d8d8;
-}
-
-.btn-trade {
-  border: none;
-  background: $light-accent-200;
-  padding: 4px 20px;
-  color: #333;
-  font-size: 1em;
-  font-weight: 600;
-  border-radius: 4px;
-  text-transform: uppercase;
-  cursor: pointer;
-
-  &:hover {
-    background: transparent;
-    border: 1px solid #32d296;
-    color: #32d296;
-  }
 }

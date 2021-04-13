@@ -104,15 +104,16 @@ export default {
     });
 
     const doSearch = async (query = "gamestop") => {
+      console.log("query", query);
       let result = await stocks.searchSome(query);
 
       if (result.quotes?.length) {
-        console.log("results");
+        console.log("results", query);
         searchResults.value = result.quotes;
         searchNews.value = result.news;
       } else {
         searchResults.value = [];
-        console.log("no results");
+        console.log("no results", query);
         if (query.length > 0) {
           displayMsg.value = `No results found for ${query}`;
         } else {
@@ -168,45 +169,6 @@ function doReduce(prev, next) {
 
 <style lang="scss">
 @import "../styles/global.scss";
-
-
-.header-price {
-  font-size: 20px;
-  font-weight: 700;
-  // background: #3e5974;
-  color: #6a7d91;
-  border: 1px solid;
-  border-radius: 10px;
-  padding: 2px 8px;
-
-  &__currency {
-    font-weight: 400;
-    color: #444f5a;
-    margin-right: 4px;
-  }
-}
-.wallet-amount {
-  font-size: 20px;
-  font-weight: 700;
-  // background: #3e5974;
-  color: #6a7d91;
-
-  &__currency {
-    font-weight: 400;
-    color: #444f5a;
-    margin-right: 4px;
-  }
-}
-.modal {
-  background: $light-primary-100;
-  color: $light-contrast-300;
-}
-// .uk-modal-header {
-//   // border-bottom: 1px solid $light-accent-100;
-// }
-.uk-modal-footer {
-  border-top: 1px solid $light-accent-200;
-}
 // .stock-overview {
 //   color: #b8c8dc;
 //   padding: 20px;

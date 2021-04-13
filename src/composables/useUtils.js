@@ -50,6 +50,14 @@ const notify = (msg, status) => {
   });
 };
 
+// Diamond calculator
+const diamondCalculator = (timeInMs) => {
+  // for every 48 hours you hold a stock, you get 1 diamond per share
+  // if you have 30 shares you'll get 30 diamonds
+  // for every 10 diamonds you get 100
+
+}
+
 const groupBySymbolHandler = () => {
   const cloneStonks = Array.from(props.stonks);
   let grouped = groupBy(cloneStonks, "symbol");

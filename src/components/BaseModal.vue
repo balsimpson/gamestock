@@ -13,7 +13,7 @@
       <div v-if="!clickedTrade">
         <div>
           <div class="uk-modal-header modal uk-flex uk-flex-middle">
-            <div class="uk-modal-title uk-margin-large-right accent">
+            <div class="header-title uk-margin-large-right">
               {{ stonk.symbol }}
             </div>
             <div>
@@ -21,10 +21,10 @@
                 <span>{{ stonk.market_price }}</span>
               </div>
             </div>
-            <BasePercentChange
+            <!-- <BasePercentChange
               :oldVal="Number(stonk.bought_price)"
               :newVal="Number(stonk.market_price)"
-            ></BasePercentChange>
+            ></BasePercentChange> -->
           </div>
 
           <div class="uk-modal-body">
@@ -38,18 +38,17 @@
 
              
             <div class="uk-text-center uk-text-large">
-              <div class="uk-text-small uk-text-uppercase">
+              <div class="content-title">
                 {{ amountHeader }}
               </div>
-              <span class="uk-text-muted uk-text-light"></span
-              >{{ amount.toFixed(2) }}
+              <span class="content-value">{{ amount.toFixed(2) }}</span>
             </div>
           </div>
         </div>
       </div>
 
       <div v-else>
-        <BaseConfirmationMsg @msgDone="closeModal" />
+        <BaseConfirmationMsg @msgDone="closeModal" :message="confirmationMsg" />
       </div>
 
       <div
@@ -57,14 +56,14 @@
         class="uk-modal-footer uk-flex uk-flex-between uk-flex-middle modal"
       >
         <div>
-          <div class="uk-flex uk-flex-middle" style="font-size: 12px">
+          <div class="uk-flex uk-flex-middle footer-title">
             <i class="fas fa-wallet"></i
             ><span style="margin-left: 4px; text-transform: uppercase"
               >Wallet</span
             >
           </div>
           <div class="wallet-amount">
-            {{ balance.toLocaleString() }}
+            {{ balance }}
           </div>
         </div>
         <button @click="btnHandler" class="btn-trade" type="button">
@@ -99,6 +98,7 @@ export default {
     const wallet = ref(0);
     const btnText = ref("");
     const clickedTrade = ref(false);
+    const confirmationMsg = ref("");
     let el;
 
     // console.log("props", props);
@@ -114,11 +114,14 @@ export default {
     });
 
     let balance = computed(() => {
-      // console.log(props.tradetype + ":" + btnText.value, props.stonk.symbol);
       if (props.tradetype == "buy") {
-        return Number(wallet.value) - Number(amount.value);
+        return (Number(wallet.value) - Number(amount.value))
+          .toFixed(2)
+          .toLocaleString();
       } else {
-        return Number(wallet.value) + Number(amount.value);
+        return (Number(wallet.value) + Number(amount.value))
+          .toFixed(2)
+          .toLocaleString();
       }
     });
     let amount = computed(() => {
@@ -130,42 +133,21 @@ export default {
     };
 
     const btnHandler = () => {
-      if (props.tradetype === "buy") {
-        props.stonk.shares = props.stonk.shares + count.value;
+      if (props.tradetype === "buy" && count.value !== 0) {
+        // props.stonk.shares = count.value;
         props.stonk.bought_price = props.stonk.market_price;
+        clickedTrade.value = true;
+
+        confirmationMsg.value = `You bought ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.bought_price}`
         buyStock();
-      } else {
+      } else if (props.tradetype === "sell" && count.value !== 0) {
         props.stonk.shares = props.stonk.shares - count.value;
+        clickedTrade.value = true;
+
+        confirmationMsg.value = `You sold ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.market_price}`
         sellStock();
       }
-      
-      clickedTrade.value = true;
-      console.log("clicked", props.tradetype);
     };
-
-    const closeModal = () => {
-      console.log("close trade modal");
-      UIkit.modal("#modal").hide();
-    };
-
-    onMounted(() => {
-      btnText.value = props.tradetype;
-
-      UIkit.util.on("#modal", "beforeshow", function () {
-        console.log("showing modal");
-        // do something
-        count.value = 0;
-        emit("count-change", count);
-      });
-    });
-
-    watchEffect(() => {
-      console.log('stonk', props.stonk)
-      btnText.value = props.tradetype;
-      wallet.value = store.state.wallet;
-      price.value = parseInt(props.stonk.market_price);
-      amountHeader.value = props.tradetype == "buy" ? "investment" : "income";
-    });
 
     const sellStock = () => {
       let data = {
@@ -174,6 +156,7 @@ export default {
           wallet: balance.value,
         },
       };
+      data.stonk.shares = count.value;
       store.dispatch("sellStonk", data);
     };
 
@@ -186,6 +169,31 @@ export default {
       };
       store.dispatch("buyStonk", data);
     };
+
+    const closeModal = () => {
+      // console.log("close trade modal");
+      UIkit.modal("#modal").hide();
+    };
+
+    onMounted(() => {
+      btnText.value = props.tradetype;
+      
+      UIkit.util.on("#modal", "beforeshow", function () {
+        clickedTrade.value = false;
+        count.value = 0;
+        emit("count-change", count);
+      });
+    });
+
+    watchEffect(() => {
+      btnText.value = props.tradetype;
+      wallet.value = store.state.wallet;
+      price.value = parseInt(props.stonk.market_price);
+      amountHeader.value = props.tradetype == "buy" ? "investment" : "income";
+      // console.log(props.tradetype + ":" + props.stonk.symbol);
+    });
+
+    
 
     return {
       amountHeader,
@@ -200,6 +208,7 @@ export default {
       btnHandler,
       clickedTrade,
       closeModal,
+      confirmationMsg
     };
   },
 };
@@ -207,4 +216,95 @@ export default {
 
 <style lang="scss">
 @import "../styles/global.scss";
+
+.header-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: $theme1-primary-300;
+}
+
+.footer-title {
+  font-size: 12px;
+  font-weight: 400;
+  color: $theme1-primary-600;
+}
+
+.content-title {
+  font-size: 1.1em;
+  text-transform: uppercase;
+  color: $theme1-primary-600;
+  line-height: 1;
+  padding-top: 10px;
+}
+
+.content-value {
+  font-size: 1.1em;
+  text-transform: uppercase;
+  color: $theme1-primary-500;
+}
+
+.header-price {
+  font-size: 14px;
+  font-weight: 400;
+  // background: #3e5974;
+  color: $theme1-primary-300;
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 2px 8px;
+
+  &__currency {
+    font-weight: 400;
+    color: $theme1-primary-300;
+    margin-right: 4px;
+  }
+}
+
+.wallet-amount {
+  font-size: 20px;
+  font-weight: 700;
+  // background: #3e5974;
+  color: $theme1-primary-500;
+
+  &__currency {
+    font-weight: 400;
+    color: $theme1-primary-800;
+    margin-right: 4px;
+  }
+}
+
+.btn-trade {
+  cursor: pointer;
+  text-transform: uppercase;
+  line-height: 1.5;
+  font-weight: 900;
+  padding: 4px 18px;
+  border-radius: 20px;
+  width: fit-content;
+  // box-shadow: 0px 3px 8px #00000024;
+  transition: all 0.2s ease-out;
+  background: transparent;
+  color: $theme1-primary-600;
+  border: 2px solid $theme1-primary-600;
+
+  &:hover {
+    background: $theme1-primary-500;
+    border: 2px solid $theme1-primary-500;
+    color: $theme1-primary-800;
+  }
+}
+
+.modal {
+  background: $theme1-primary-800;
+  color: $light-contrast-300;
+  border-radius: 20px;
+  line-height: 1;
+}
+
+.uk-modal-header {
+  border-bottom: 0px solid $light-accent-100;
+}
+
+.uk-modal-footer {
+  border-top: 0px solid $light-accent-200;
+}
 </style>

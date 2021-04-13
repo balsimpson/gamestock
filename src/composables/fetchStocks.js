@@ -3,7 +3,7 @@ const fetchStocks = {
     let url = `https://wrapapi.com/use/balsimpson/feeds/stockSearch/latest?query=${query}&wrapAPIKey=rnobhyu0QNyehnOCXtY1y7yatP4CkjKF`;
     return await doFetch(url);
   },
-  
+
   async searchNews(query) {
     let url = `https://newsapi.org/v2/everything?q=${query}&sortBy=publishedAt&apiKey=33185ced927f474dad697fdb7e27869f`;
     return await doFetch(url);
@@ -16,10 +16,13 @@ const fetchStocks = {
 };
 
 async function doFetch(url) {
-  let res = await fetch(url);
-  let result = await res.json();
-//   console.log("result", result);
-  return result;
+  try {
+    let res = await fetch(url);
+    let result = await res.json();
+    return result;
+  } catch (error) {
+    console.log(error.message);
+  }
 }
 
 export default fetchStocks;

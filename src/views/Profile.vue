@@ -19,40 +19,7 @@
       </div>
     </div>
 
-    <div class="uk-container uk-container-small uk-margin-large-top">
-      <!-- Portfolio List View -->
-      <table
-        v-if="trades"
-        class="uk-table uk-table-hover uk-table-justify uk-table-small uk-table-divider"
-      >
-        <thead>
-          <tr>
-            <th>Symbol</th>
-            <th class="">Name</th>
-            <th class="uk-text-right">Shares</th>
-            <th class="uk-text-right">Paid Price</th>
-            <th class="uk-text-right">Exchange</th>
-            <th class="uk-text-right uk-width-small">Date</th>
-            <th class="uk-text-right"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="stonk in trades" :key="stonk.symbol">
-            <td class="uk-text-left">{{ stonk.symbol }}</td>
-            <td class="uk-text-left">{{ stonk.name }}</td>
-            <td class="uk-text-right">{{ stonk.shares }}</td>
-            <td class="uk-text-right">{{ stonk.bought_price }}</td>
-            <td class="uk-text-right">{{ stonk.exchangeName }}</td>
-            <td class="uk-text-right">{{ formatDate(stonk.date, "short") }}</td>
-            <td>
-              <div class="item-tag">
-                {{ stonk.tradeType }}
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <BaseTable />
   </div>
 
 </template>
@@ -62,6 +29,7 @@ import { ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { formatDate } from "@/composables/useUtils";
 import BaseNav from "@/components/BaseNav.vue";
+import BaseTable from "@/components/BaseTable.vue";
 import BaseFooter from "@/components/BaseFooter.vue";
 import FontAwesomeIcon from "@/components/FontAwesomeIcon";
 
@@ -69,6 +37,7 @@ export default {
   components: {
     BaseNav,
     BaseFooter,
+    BaseTable,
     FontAwesomeIcon,
   },
   setup() {
@@ -80,7 +49,7 @@ export default {
     watchEffect(() => {
       trades.value = store.state.trades;
       user.value = store.state.userProfile;
-      nickname.value = store.state.userProfile.name.split(" ");
+      nickname.value = store.state.userProfile.name.split(" ")[0];
     });
 
     return {

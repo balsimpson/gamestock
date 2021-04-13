@@ -21,7 +21,7 @@
 
     <div v-if="oldVal" class="uk-animation-fade">
       <span class="card-text-accent">{{ amount.toLocaleString() }} </span>
-      <BasePercentChange :oldVal="oldVal" :newVal="newVal"></BasePercentChange>
+      <BasePercentChange :oldVal="Number(oldVal)" :newVal="Number(newVal)"></BasePercentChange>
     </div>
 
     <div class="uk-flex uk-flex-between uk-width-expand uk-margin-small-top">
@@ -92,6 +92,7 @@ export default {
         stonk: props.stonk,
       };
       tradetype.value = type;
+      console.log("btnClick", data);
       emit("btnClick", data);
     };
 
@@ -100,7 +101,7 @@ export default {
 
       const result = await stocks.details(props.stonk.symbol);
       // console.log('getMarketprice', result);
-      marketprice.value = result.meta.regularMarketPrice.toFixed(2);
+      marketprice.value = result.meta.regularMarketPrice.toFixed(2) || props.stonk.bought_price;
 
       let val = {
         symbol: props.stonk.symbol,

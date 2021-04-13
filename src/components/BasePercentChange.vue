@@ -26,39 +26,40 @@ export default {
     const tendies = ref(false);
 
     const getPercentChange = () => {
-      let diff = props.newVal - props.oldVal;
-
-      // console.log('diff', Math.abs(diff).toFixed(2), Number(Math.abs((diff * 100) / props.oldVal).toFixed(2)));
-
-      // valuechange.value = Math.abs(diff).toFixed(2);
-      valuechange.value = Math.abs(diff).toFixed(2);
-      tendies.value = diff > 0 ? true : false;
-      // let res = Number(Math.abs((diff * 100) / props.oldVal).toFixed(2));
-      let res = (diff * 100) / props.oldVal;
-      // console.log('res', Math.abs(res));
-      return Math.abs(res).toFixed(2);
+      if (Number(props.newVal) && Number(props.oldVal)) {
+        let diff = props.newVal - props.oldVal;
+        valuechange.value = Math.abs(diff).toFixed(2);
+        tendies.value = diff > 0 ? true : false;
+        let res = (diff * 100) / props.oldVal;
+        // console.log("res", Math.abs(res).toFixed(2));
+        return Math.abs(res);
+      } else {
+        // console.log("newVal", props.newVal);
+        // console.log("oldVal", props.oldVal);
+        return
+      }
     };
 
     const showVal = () => {
       // console.log(showpercent.value, props.oldVal, props.newVal);
       if (showpercent.value && Number(percentchange.value)) {
-        // console.log(showpercent.value, Number(percentchange.value))
-        changeDisplay.value = percentchange.value + '%';
+        // console.log('showpercent.value', showpercent.value, Number(percentchange.value));
+        changeDisplay.value = (percentchange.value).toFixed(2) + "%";
         showpercent.value = !showpercent.value;
       } else {
         changeDisplay.value = valuechange.value;
         showpercent.value = !showpercent.value;
       }
-    }
+    };
 
     onMounted(() => {
       showVal();
-    })
+    });
 
     watchEffect(() => {
       percentchange.value = getPercentChange();
       if (Number(percentchange.value)) {
-        changeDisplay.value = percentchange.value + '%';
+        changeDisplay.value = (percentchange.value).toFixed(2) + "%";
       }
     });
 

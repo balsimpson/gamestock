@@ -10,7 +10,7 @@
       class="uk-text-large uk-text-bold uk-flex uk-flex-middle uk-animation-fade"
     >
       {{ value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
-      <BasePercentChange :oldVal="oldVal" :newVal="newVal"></BasePercentChange>
+      <BasePercentChange :oldVal="Number(oldVal)" :newVal="Number(newVal)"></BasePercentChange>
     </div>
     <div>
       <span class="uk-text-bold">{{ subtitleOne }} </span>

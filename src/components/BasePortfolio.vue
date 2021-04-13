@@ -96,7 +96,7 @@
     class="uk-grid-small uk-grid-match uk-child-width-1-2@s uk-text-center uk-text-center"
     uk-grid
   >
-    <div v-for="stonk in groupedStonks" :key="stonk.symbol">
+    <div v-for="stonk in stonks" :key="stonk.symbol">
       <BaseCard @btnClick="btnClick" :stonk="stonk" :isGrouped="isGrouped" />
     </div>
   </div>
@@ -168,10 +168,10 @@ export default {
 
     // show modal
     const showModal = (data) => {
-      console.log("showModal", data);
-      stonk.value = data.stonk;
+      stonk.value = data.stonk.value;
       tradetype.value = data.type;
 
+      
       UIkit.modal("#modal").show();
     };
 
@@ -186,11 +186,7 @@ export default {
     };
 
     const btnClick = (data) => {
-      console.log("showModal", data);
-      stonk.value = data;
-      tradetype.value = "sell";
-
-      UIkit.modal("#modal").show();
+      emit("showModal", data);
     };
 
     const switchValueChange = (val) => {
@@ -216,7 +212,7 @@ export default {
         0
       );
       isGrouped.value = store.state.isGrouped;
-      // console.log('grouped', groupedStonks.value);
+      console.log('stonks', props.stonks);
       // groupedStonks.value = groupBySymbolHandler()
     });
 
