@@ -1,7 +1,11 @@
 <template>
   <div class="uk-text-left">
     <div class="uk-text-small uk-text-uppercase">
-      <i v-if="icon" class="fas uk-margin-small-right" :class="'fa-' + icon"></i>
+      <i
+        v-if="icon"
+        class="fas uk-margin-small-right"
+        :class="'fa-' + icon"
+      ></i>
       <span class="uk-text-bold">
         {{ title }}
       </span>
@@ -9,8 +13,16 @@
     <div
       class="uk-text-large uk-text-bold uk-flex uk-flex-middle uk-animation-fade"
     >
-      {{ value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) }}
-      <BasePercentChange :oldVal="Number(oldVal)" :newVal="Number(newVal)"></BasePercentChange>
+      {{
+        value.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+      }}
+      <BasePercentChange
+        :oldVal="Number(oldVal)"
+        :newVal="Number(newVal)"
+      ></BasePercentChange>
     </div>
     <div>
       <span class="uk-text-bold">{{ subtitleOne }} </span>
@@ -40,9 +52,7 @@ export default {
     BasePercentChange,
   },
   setup(props) {
-    const subtitleOne = ref("");
-    const subtitleTwo = ref("");
-
+    
     const getUniqueCompanyCount = () => {
       let grouped = groupBy(props.stonks, "symbol");
       let keys = Object.keys(grouped);
@@ -57,7 +67,6 @@ export default {
       // console.log("total shares", total);
       return total;
     };
-
 
     const groupBySymbolHandler = () => {
       let grouped = groupBy(props.stonks, "symbol");
@@ -111,6 +120,18 @@ export default {
       }, {});
     };
 
+    const subtitleOne = computed(() => {
+      let grouped = groupBy(props.stonks, "symbol");
+      let keys = Object.keys(grouped);
+      return keys.length;
+    }
+      
+    );
+
+    const subtitleTwo = computed(() => {
+      return props.stonks.reduce((prev, next) => prev + Number(next.shares), 0);
+    });
+
     const subtitleOneTxt = computed(() =>
       subtitleOne.value === 1 ? " company" : " companies"
     );
@@ -122,8 +143,8 @@ export default {
     onMounted(() => {});
 
     watchEffect(() => {
-      subtitleOne.value = getUniqueCompanyCount();
-      subtitleTwo.value = getTotalShareCount();
+      // subtitleOne.value = getUniqueCompanyCount();
+      // subtitleTwo.value = getTotalShareCount();
     });
 
     return { subtitleOne, subtitleOneTxt, subtitleTwo, subtitleTwoTxt };

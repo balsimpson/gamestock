@@ -24,11 +24,11 @@
       }}</span>
     </div>
 
-    <div class="uk-text-right">
+    <!-- <div class="uk-text-right">
       <a href="#modal-full" uk-toggle>
         <span class="uk-text-bold uk-text-uppercase">{{ tradesCount }}</span>
       </a>
-    </div>
+    </div> -->
 
     <div id="modal-full" class="uk-modal-full" uk-modal>
       <div class="uk-modal-dialog">

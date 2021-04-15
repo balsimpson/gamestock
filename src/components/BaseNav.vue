@@ -42,14 +42,18 @@
               All Trades
             </span>
           </li> -->
-          <li @click="btnHandler" class="nav-dropdown-item">
-            <FontAwesomeIcon icon="comment-dots" />
-            <span
-              class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
-            >
-              Feedback
-            </span>
+
+          <li class="nav-dropdown-item">
+            <a href="#modal-feedback" uk-toggle>
+              <FontAwesomeIcon icon="comment-dots" />
+              <span
+                class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
+              >
+                Feedback
+              </span>
+            </a>
           </li>
+
           <li @click="btnHandler" class="nav-dropdown-item">
             <FontAwesomeIcon icon="sign-out-alt" />
             <span
@@ -62,6 +66,42 @@
       </div>
     </div>
   </nav>
+
+  <div id="modal-feedback" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical feedback">
+      <button class="uk-modal-close-default" type="button" uk-close></button>
+
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.
+      </p>
+      <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">Text</label>
+        <input
+          class="uk-range"
+          type="range"
+          value="5"
+          min="0"
+          max="10"
+          step="1"
+        />
+      </div>
+      <div class="uk-margin">
+        <textarea
+          class="uk-textarea"
+          rows="5"
+          placeholder="Textarea"
+        ></textarea>
+      </div>
+      <div class="uk-text-center">
+        <a
+          href="#"
+          class="uk-button uk-button-small uk-button-secondary uk-border-pill"
+          >submit</a
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

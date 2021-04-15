@@ -191,12 +191,12 @@ $theme-border-dark: $theme1-primary-800;
 }
 
 .dashboard-header {
-  color: $theme1-primary-800;
+  color: $theme1-primary-700;
   padding: 20px;
   margin-top: 60px;
   margin-bottom: 20px;
-  border-top: 1px solid;
-  border-bottom: 1px solid;
+  border-top: 1px solid $theme1-primary-600;
+  border-bottom: 1px solid $theme1-primary-500;
 }
 
 .uk-text-success {
@@ -232,5 +232,12 @@ $theme-border-dark: $theme1-primary-800;
 .uk-table-divider > :first-child > tr:not(:first-child),
 .uk-table-divider > :not(:first-child) > tr,
 .uk-table-divider > tr:not(:first-child) {
-  border-top: 1px solid #d8d8d8;
+  border-top: 1px solid $theme1-primary-500;
+}
+
+.feedback {
+  background-color: $theme1-primary-800;
+  color: $theme1-primary-200;
+  border-radius: 10px;
+  padding: 40px 40px 20px;
 }

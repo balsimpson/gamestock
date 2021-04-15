@@ -150,7 +150,7 @@ const fb = {
       userUid: userUid,
       userName: userName
     };
-    console.log("logTrade", data);
+    // console.log("logTrade", data);
     return await trades.add(data);
   },
 
