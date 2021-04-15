@@ -78,7 +78,10 @@
         <td class="uk-text-right">
           <!-- <div> -->
           <BaseButton
-            @btnClick="btnClick(stonk, 'sell')"
+            @btnClick="btnClick({
+              stonk: stonk, 
+              type: 'sell'
+            })"
             text="sell"
             size="small"
             type="filled"
@@ -98,7 +101,7 @@
     uk-grid
   >
     <div v-for="stonk in stonks" :key="stonk.id">
-      <BaseCard @btnClick="btnClick" :stonk="stonk" :isGrouped="isGrouped" />
+      <BaseCard @btnClick="btnClick($event)" :stonk="stonk" :isGrouped="isGrouped" />
     </div>
   </div>
 
@@ -169,13 +172,13 @@ export default {
     });
 
     // show modal
-    const showModal = (data) => {
-      stonk.value = data.stonk.value;
-      tradetype.value = data.type;
+    // const showModal = (data) => {
+    //   stonk.value = data.stonk.value;
+    //   tradetype.value = data.type;
 
       
-      UIkit.modal("#modal").show();
-    };
+    //   UIkit.modal("#modal").show();
+    // };
 
     const changeView = (view) => {
       if (view === "list") {
@@ -188,13 +191,8 @@ export default {
     };
 
     const btnClick = (data, type) => {
-      let val = {
-        type: type,
-        stonk: data,
-      };
-      
-      // console.log('data', val);
-      emit("showModal", val);
+      console.log('PortfolioData', data, type);
+      emit("showModal", data);
     };
 
     const switchValueChange = (val) => {
@@ -231,7 +229,6 @@ export default {
       groupedStonks,
       capital,
       investment,
-      showModal,
       btnClick,
       switchValueChange,
       formatDate,

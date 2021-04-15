@@ -88,7 +88,7 @@ export default {
     };
 
     const showModal = (data) => {
-      console.log("showModal", data);
+      console.log("DashboardShowModal", data);
       stonk.value = data.stonk;
       tradetype.value = data.type;
 

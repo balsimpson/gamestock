@@ -95,7 +95,7 @@ export default {
         stonk: props.stonk,
       };
       tradetype.value = type;
-      console.log("btnClick", data);
+      
       emit("btnClick", data);
     };
 
