@@ -20,7 +20,10 @@
     </div>
 
     <div v-if="oldVal" class="uk-animation-fade">
-      <span class="card-text-accent">{{ amount.toLocaleString() }} </span>
+      <span class="card-text-accent">{{ amount.toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }) }} </span>
       <BasePercentChange :oldVal="Number(oldVal)" :newVal="Number(newVal)"></BasePercentChange>
     </div>
 
@@ -78,7 +81,7 @@ export default {
     const marketprice = ref("0");
     // const stockchange = ref("");
     const amount = computed(() =>
-      (marketprice.value * props.stonk.shares).toFixed(2)
+      (marketprice.value * props.stonk.shares)
     );
     const displayDate = computed(
       () => formatDate(props.stonk.date)

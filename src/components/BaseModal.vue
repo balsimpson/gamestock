@@ -138,13 +138,13 @@ export default {
         props.stonk.bought_price = props.stonk.market_price;
         clickedTrade.value = true;
 
-        confirmationMsg.value = `You bought ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.bought_price}`
+        confirmationMsg.value = `You bought ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.bought_price}`;
         buyStock();
       } else if (props.tradetype === "sell" && count.value !== 0) {
         props.stonk.shares = props.stonk.shares - count.value;
         clickedTrade.value = true;
 
-        confirmationMsg.value = `You sold ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.market_price}`
+        confirmationMsg.value = `You sold ${count.value} shares of ${props.stonk.symbol} for ${props.stonk.market_price}`;
         sellStock();
       }
     };
@@ -152,17 +152,32 @@ export default {
     const sellStock = () => {
       let data = {
         stonk: props.stonk,
+        count: count.value,
         wallet: {
           wallet: balance.value,
         },
       };
-      data.stonk.shares = count.value;
+      console.log("sellstock data", data);
       store.dispatch("sellStonk", data);
     };
 
     const buyStock = () => {
+      let stonk = {
+        name: props.stonk.name,
+        symbol: props.stonk.symbol,
+        type: props.stonk.type,
+        bought_price: props.stonk.bought_price,
+        market_price: props.stonk.market_price,
+        currency: props.stonk.currency,
+        shares: count.value,
+        date: Date.now(),
+        exchangeName: props.stonk.exchangeName,
+        regularMarketTime: props.stonk.regularMarketTime,
+        previousClose: props.stonk.previousClose,
+      };
+
       let data = {
-        stonk: props.stonk,
+        stonk: stonk,
         wallet: {
           wallet: balance.value,
         },
@@ -177,7 +192,7 @@ export default {
 
     onMounted(() => {
       btnText.value = props.tradetype;
-      
+
       UIkit.util.on("#modal", "beforeshow", function () {
         clickedTrade.value = false;
         count.value = 0;
@@ -193,8 +208,6 @@ export default {
       // console.log(props.tradetype + ":" + props.stonk.symbol);
     });
 
-    
-
     return {
       amountHeader,
       countChange,
@@ -208,7 +221,7 @@ export default {
       btnHandler,
       clickedTrade,
       closeModal,
-      confirmationMsg
+      confirmationMsg,
     };
   },
 };

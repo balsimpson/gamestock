@@ -83,7 +83,7 @@ const fb = {
 
   // Update Wallet
   async updateWallet(data, userEmail) {
-    console.log(data, userEmail);
+    // console.log(data, userEmail);
     let itemRef = apes.doc(userEmail);
     itemRef.update(data);
   },
@@ -127,7 +127,7 @@ const fb = {
       regularMarketTime: item.regularMarketTime,
       previousClose: item.previousClose
     };
-    console.log("itemref", data);
+    // console.log("itemref", data);
     let itemRef = apes.doc(userEmail).collection("portfolio");
     return await itemRef.add(data);
   },
@@ -150,12 +150,13 @@ const fb = {
       userUid: userUid,
       userName: userName
     };
-    console.log("traderef", data);
+    console.log("logTrade", data);
     return await trades.add(data);
   },
 
   async updateItem(data, userEmail) {
     if (data.shares > 0) {
+      // console.log('data', data);
       let itemRef = apes
         .doc(userEmail)
         .collection("portfolio")
@@ -163,6 +164,7 @@ const fb = {
       return await itemRef.update(data);
     } else {
       // delete the entry
+      // console.log('delete', data);
       let itemRef = apes
         .doc(userEmail)
         .collection("portfolio")

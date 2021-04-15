@@ -1,6 +1,6 @@
 <template>
   <nav class="uk-flex uk-flex-between uk-flex-middle uk-margin-medium-top">
-    <router-link to="/dashboard" style="width: 300px;">
+    <router-link to="/dashboard" style="width: 300px">
       <img
         src="../assets/paperhand_logo.png"
         alt=""
@@ -34,14 +34,14 @@
               </span>
             </router-link>
           </li>
-          <li @click="btnHandler" class="nav-dropdown-item">
+          <!-- <li @click="btnHandler" class="nav-dropdown-item">
             <FontAwesomeIcon icon="bell" />
             <span
               class="uk-text-medium uk-text-bold uk-text-uppercase uk-margin-small-left"
             >
               All Trades
             </span>
-          </li>
+          </li> -->
           <li @click="btnHandler" class="nav-dropdown-item">
             <FontAwesomeIcon icon="comment-dots" />
             <span
@@ -100,6 +100,13 @@ export default {
   // box-shadow: none;
   min-width: 160px;
 }
+.uk-dropdown-nav > li > a {
+  color: $theme1-primary-100;
+
+  &:hover {
+    color: $theme1-primary-800;
+  }
+}
 .nav-dropdown {
   border-radius: 10px 10px 10px 10px;
   background: $theme1-primary-800;
@@ -118,9 +125,11 @@ export default {
 
 .nav-dropdown-item:hover {
   background: $theme1-primary-500;
-  color: $light-contrast-300;
-  border-top: 1px solid $theme1-primary-500;
-  // border-radius: 10px 10px 10px 10px;
+  color: $theme1-primary-800;
+
+  a {
+    color: $theme1-primary-800;
+  }
 }
 
 .nav-dropdown-item:is(:last-child):hover {

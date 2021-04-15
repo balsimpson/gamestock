@@ -4,7 +4,7 @@
 
     <!-- Search -->
     <div class="uk-margin uk-container uk-container-small">
-      <BaseSearch @searchQuery="doSearch($event)" placeholder="e.g. GME" />
+      <BaseSearch @searchQuery="doSearch($event)" @clearResults="clearResults()" placeholder="e.g. GME" />
       <BaseSearchResults
         v-if="searchResults"
         @showModal="showModal"
@@ -37,8 +37,8 @@ import BasePortfolio from "@/components/BasePortfolio.vue";
 import BaseModal from "@/components/BaseModal.vue";
 
 import BaseChart from "@/components/BaseChart";
-
 import stocks from "@/composables/fetchStocks";
+import { sortArrayOfObjects } from "@/composables/useUtils";
 
 export default {
   components: {
@@ -104,16 +104,16 @@ export default {
     });
 
     const doSearch = async (query = "gamestop") => {
-      console.log("query", query);
+      // console.log("query", query);
       let result = await stocks.searchSome(query);
 
       if (result.quotes?.length) {
-        console.log("results", query);
+        // console.log("results", query);
         searchResults.value = result.quotes;
         searchNews.value = result.news;
       } else {
         searchResults.value = [];
-        console.log("no results", query);
+        // console.log("no results", query);
         if (query.length > 0) {
           displayMsg.value = `No results found for ${query}`;
         } else {
@@ -123,12 +123,17 @@ export default {
       // console.log(result);
     };
 
+    const clearResults = () => {
+      searchResults.value = [];
+    }
+
     watchEffect(() => {
       user.value = store.state.userProfile;
       stonks.value = store.state.portfolio;
+      // stonks.value = sortArrayOfObjects(store.state.portfolio, 'date', false) ;
       username.value = store.state.userProfile.name;
       photoURL.value = store.state.userProfile.photoURL;
-      console.log(store.state);
+      // console.log(store.state.portfolio);
       // console.log("store", store.state.isGrouped);
       // stonks.value,
       // reduced,
@@ -146,6 +151,7 @@ export default {
       signOut,
       doSearch,
       searchResults,
+      clearResults,
       count,
       countChange,
       oldVal,

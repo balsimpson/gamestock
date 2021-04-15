@@ -23,13 +23,13 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 export default {
   name: "BaseSearch",
   props: {
     placeholder: String,
   },
-  emits: ["search-query"],
+  emits: ["search-query", "clear-results"],
   setup(props, { emit }) {
     const query = ref("");
     let timeoutRef = null;
@@ -40,6 +40,17 @@ export default {
       console.log('search', query.value);
       emit("search-query", query.value);
     };
+
+    const emitClearResults = () => {
+      console.log('clearResults', query.value);
+      emit("clear-results", query.value);
+    };
+
+    watchEffect(() => {
+      if (query.value.length == 0) {
+        emit("clear-results");
+      }
+    })
 
     const debounceListener = async (e) => {
       if (timeoutRef !== null) {
@@ -52,7 +63,7 @@ export default {
       }, 800);
     };
 
-    return { query, emitSearch, debounceListener, displayQuery };
+    return { query, emitSearch, emitClearResults, displayQuery };
   },
 };
 </script>

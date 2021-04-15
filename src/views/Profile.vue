@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 import { useStore } from "vuex";
 import { formatDate } from "@/composables/useUtils";
 import BaseNav from "@/components/BaseNav.vue";
@@ -43,13 +43,22 @@ export default {
   setup() {
     const store = useStore();
     const user = ref();
-    const nickname = ref("");
+    const nickname = computed(() => {
+      
+      if (store.state && store.state.userProfile && store.state.userProfile.nickname) {
+        return store.state.userProfile.nickname;
+      } else if (store.state && store.state.userProfile.name) {
+        return store.state?.userProfile.name.split(" ")[0];
+      }
+
+    });
+
     const trades = ref();
 
     watchEffect(() => {
       trades.value = store.state.trades;
       user.value = store.state.userProfile;
-      nickname.value = store.state.userProfile.name.split(" ")[0];
+      // nickname.value = store.state?.userProfile.name.split(" ")[0];
     });
 
     return {
@@ -80,15 +89,6 @@ function doReduce(prev, next) {
     border-radius: 20px;
     padding: 10px;
   }
-}
-
-.item-tag {
-  font-size: 12px;
-  text-transform: uppercase;
-  padding: 2px 4px;
-  border: 1px solid;
-  border-radius: 4px;
-  background: blanchedalmond;
 }
 
 .header-price {

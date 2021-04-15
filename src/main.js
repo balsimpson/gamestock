@@ -4,11 +4,11 @@ import VueMoment from "vue-moment";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import { auth } from "@/composables/useFirebase";
+import { auth, db, apes } from "@/composables/useFirebase";
 
 let app;
 
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
   if (!app) {
     app = createApp(App)
       .use(store)
@@ -38,8 +38,13 @@ auth.onAuthStateChanged(user => {
     let lastSignInTime = auth.currentUser.metadata.lastSignInTime;
 
     if (creationTime === lastSignInTime) {
-      userProfile.newUser = true;
-      console.log("new user", userProfile);
+
+      // check if user already exists
+      const ape = apes.doc(user.email);
+      const doc = await ape.get();
+      if (!doc.exists) {
+        userProfile.newUser = true;
+      }
     }
 
     store.dispatch("userLoggedIn", userProfile);

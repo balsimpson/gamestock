@@ -17,6 +17,7 @@
     <DashboardWallet
       title="Wallet"
       :value="wallet"
+      :subtitle="trades.length  + ' trades'"
       icon="wallet"
       align="right"
     />
@@ -67,7 +68,7 @@
       </tr>
     </thead>
     <tbody style="font-weight: 500">
-      <tr v-for="stonk in stonks" :key="stonk.symbol">
+      <tr v-for="stonk in stonks" :key="stonk.id">
         <td class="uk-text-left">{{ stonk.symbol }}</td>
         <td class="uk-text-left">{{ stonk.name }}</td>
         <td class="uk-text-right">{{ stonk.shares }}</td>
@@ -77,7 +78,7 @@
         <td class="uk-text-right">
           <!-- <div> -->
           <BaseButton
-            @btnClick="btnClick(stonk)"
+            @btnClick="btnClick(stonk, 'sell')"
             text="sell"
             size="small"
             type="filled"
@@ -96,7 +97,7 @@
     class="uk-grid-small uk-grid-match uk-child-width-1-2@s uk-text-center uk-text-center"
     uk-grid
   >
-    <div v-for="stonk in stonks" :key="stonk.symbol">
+    <div v-for="stonk in stonks" :key="stonk.id">
       <BaseCard @btnClick="btnClick" :stonk="stonk" :isGrouped="isGrouped" />
     </div>
   </div>
@@ -145,6 +146,7 @@ export default {
   setup(props, { emit }) {
     const store = useStore();
     const wallet = ref(0);
+    const trades = ref([]);
     // orginal investment
     const capital = ref(0);
     // investment at current market price
@@ -185,8 +187,14 @@ export default {
       }
     };
 
-    const btnClick = (data) => {
-      emit("showModal", data);
+    const btnClick = (data, type) => {
+      let val = {
+        type: type,
+        stonk: data,
+      };
+      
+      // console.log('data', val);
+      emit("showModal", val);
     };
 
     const switchValueChange = (val) => {
@@ -203,6 +211,7 @@ export default {
 
     watchEffect(() => {
       wallet.value = Number(store.state.wallet);
+      trades.value = store.state.trades;
       investment.value = store.state.portfolio.reduce(
         (prev, next) => prev + Number(next.market_price) * Number(next.shares),
         0
@@ -212,12 +221,12 @@ export default {
         0
       );
       isGrouped.value = store.state.isGrouped;
-      console.log('stonks', props.stonks);
       // groupedStonks.value = groupBySymbolHandler()
     });
 
     return {
       wallet,
+      trades,
       isGrouped,
       groupedStonks,
       capital,

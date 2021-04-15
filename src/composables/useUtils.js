@@ -50,13 +50,45 @@ const notify = (msg, status) => {
   });
 };
 
+/**
+ *
+ * @param {Array} arr array of objects to be sorted
+ * @param {String} key key to sort by
+ * @param {Boolean} sortAscending sort by ascending or descending
+ * @returns
+ */
+const sortArrayOfObjects = (arr, key, sortAscending, type = "number") => {
+  if (type === "number") {
+    // console.log('sort by number', type);
+    return arr.sort((a, b) => {
+      if (sortAscending) {
+        // console.log('a:b', a[key], b[key]);
+        return a[key] - b[key];
+      } else {
+        // console.log('a:b', a[key], b[key]);
+        return b[key] - a[key];
+      }
+    });
+  } else {
+    // console.log('sort by string', type);
+    return arr.sort((a, b) => {
+      if (sortAscending) {
+        // console.log('a:b', a[key] > b[key]);
+        return a[key] > b[key];
+      } else {
+        // console.log('b:a', a[key] > b[key]);
+        return b[key] < a[key];
+      }
+    });
+  }
+};
+
 // Diamond calculator
-const diamondCalculator = (timeInMs) => {
+const diamondCalculator = timeInMs => {
   // for every 48 hours you hold a stock, you get 1 diamond per share
   // if you have 30 shares you'll get 30 diamonds
   // for every 10 diamonds you get 100
-
-}
+};
 
 const groupBySymbolHandler = () => {
   const cloneStonks = Array.from(props.stonks);
@@ -116,4 +148,4 @@ const groupBy = (xs, key) => {
   }, {});
 };
 
-export { formatDate, notify };
+export { formatDate, notify, sortArrayOfObjects };

@@ -1,7 +1,7 @@
 import { createStore } from "vuex";
 import { fb, auth, provider, apes, trades } from "@/composables/useFirebase";
 import router from "@/router/index";
-import { notify } from "@/composables/useUtils";
+import { notify, sortArrayOfObjects } from "@/composables/useUtils";
 
 let userObserver;
 let portfolioObserver;
@@ -44,24 +44,21 @@ const store = createStore({
       state.isGrouped = val;
     },
     setMarketPrice(state, val) {
-      const index = state.portfolio.findIndex(
-        item => item.symbol === val.symbol
-      );
-      state.portfolio[index].market_price = val.market_price;
-      state.portfolio[index].chart = val.chart;
-
-      // console.log(state.portfolio[index].chart);
+      if (state.portfolio && state.portfolio.length) {
+        for (const stonk of state.portfolio) {
+          if (stonk.symbol === val.symbol) {
+            stonk.market_price = val.market_price;
+            stonk.chart = val.chart;
+          }
+        }
+      }
     },
     setPortfolioUpdate(state, val) {
-      const index = state.portfolio.findIndex(
-        item => item.symbol === val.symbol
-      );
+      const index = state.portfolio.findIndex(item => item.id === val.id);
       state.portfolio[index] = val;
     },
     setPortfolioDelete(state, val) {
-      const index = state.portfolio.findIndex(
-        item => item.symbol === val.symbol
-      );
+      const index = state.portfolio.findIndex(item => item.id === val.id);
       state.portfolio.splice(index, 1);
     }
   },
@@ -86,21 +83,24 @@ const store = createStore({
       const doc = apes.doc(user.email);
 
       try {
-        userObserver = doc.onSnapshot(async doc => {
-          let details = doc.data();
+        userObserver = doc.onSnapshot(
+          async doc => {
+            let details = doc.data();
 
-          if (details) {
-            // console.log(details);
-            commit("setWallet", details.wallet);
-            commit("setIsGrouped", details.isGrouped);
-          } else {
-            console.log("no details", doc.data());
+            if (details) {
+              // console.log(details);
+              commit("setWallet", details.wallet);
+              commit("setIsGrouped", details.isGrouped);
+            } else {
+              console.log("no details", doc.data());
+            }
+          },
+          err => {
+            console.log(`Encountered error: ${err}`);
           }
-        }, err => {
-          console.log(`Encountered error: ${err}`);
-        });
+        );
       } catch (error) {
-        console.log('error:', error);
+        console.log("error:", error);
       }
     },
 
@@ -136,6 +136,7 @@ const store = createStore({
           });
 
           // console.log(portfolio);
+          portfolio = sortArrayOfObjects(portfolio, "date", false);
           commit("setPortfolio", portfolio);
         });
       } catch (error) {
@@ -146,10 +147,11 @@ const store = createStore({
     async tradeObserverHandler({ commit, getters }, user) {
       const docs = trades
         .where("userUid", "==", getters.getUser.uid)
-        .orderBy("date", "desc");
+        .orderBy("date", "desc")
+        .limit(10);
 
       let alltrades = [];
-      
+
       try {
         tradeObserver = docs.onSnapshot(snapshot => {
           snapshot.docChanges().forEach(change => {
@@ -163,9 +165,9 @@ const store = createStore({
               alltrades.push(doc);
             }
           }),
-            // console.log(portfolio);
-            commit("setTrades", alltrades);
-        }) 
+          commit("setTrades", alltrades);
+          // console.log('trade add', store.state.trades);
+        });
       } catch (error) {
         console.log(error.message);
       }
@@ -186,15 +188,15 @@ const store = createStore({
         let res = await fb.addUser(newuser);
 
         // notify
-        let msg = `Hi ${user.name.split(' ')[0]}! Welcome to Paperhand.`
+        let msg = `Hi ${user.name.split(" ")[0]}! Welcome to Paperhand.`;
         notify(msg, "success");
 
         commit("setUserProfile", user);
       } else {
-        console.log("store NOT new user");
+        // console.log("store NOT new user");
 
         // notify
-        let msg = `Hi ${user.name.split(' ')[0]}! Welcome back.`
+        let msg = `Hi ${user.name.split(" ")[0]}! Welcome back.`;
         notify(msg, "success");
 
         commit("setUserProfile", user);
@@ -209,10 +211,10 @@ const store = createStore({
     // get market price and other details
     // update relevant stock data
     async buyStonk({ getters }, data) {
-      console.log("stonk", data.stonk);
+      // console.log("buyStonk", data.stonk);
       let res = await fb.addItem(data.stonk, getters.getUser.email);
       await fb.updateWallet(data.wallet, getters.getUser.email);
-      
+
       await fb.logTrade(
         data.stonk,
         "buy",
@@ -222,9 +224,12 @@ const store = createStore({
     },
 
     async sellStonk({ getters }, data) {
-      console.log("stonk", data.stonk);
+      // console.log("sellStonk", data.stonk);
       let res = await fb.updateItem(data.stonk, getters.getUser.email);
       await fb.updateWallet(data.wallet, getters.getUser.email);
+
+      // update stock shares
+      data.stonk.shares = data.count;
       await fb.logTrade(
         data.stonk,
         "sell",
