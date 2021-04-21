@@ -9,6 +9,8 @@
       </div>
     </div>
 
+    <!-- <BaseChart title="Chart title" :chart="stonk.chart"/> -->
+
     <div class="card-title">{{ stonk.name }}</div>
     <div class="uk-flex uk-flex-middle">
       <span class="card-text-accent">{{ stonk.shares }} </span>
@@ -28,10 +30,7 @@
     </div>
 
     <div class="uk-flex uk-flex-between uk-width-expand uk-margin-small-top">
-      <!-- <button @click="btnHandler('sell')" class="card-btn">
-        <span class="card-btn__icon" uk-icon="icon: upload; ratio: 0.6"></span>
-        Sell
-      </button> -->
+      
       <BaseButton
         @btnClick="btnHandler('sell')"
         text="sell"
@@ -47,10 +46,6 @@
         color="light"
         size="small"
       />
-      <!-- <button @click="btnHandler('buy')" class="card-btn">
-        <span class="card-btn__icon" uk-icon="icon: download; ratio: 0.6"></span
-        >Buy
-      </button> -->
     </div>
   </div>
 </template>
@@ -62,14 +57,15 @@ import store from "../store";
 import stocks from "@/composables/fetchStocks";
 import BasePercentChange from "@/components/BasePercentChange";
 import BaseButton from "@/components/BaseButton";
-
+import BaseChart from "@/components/BaseChart";
 
 export default {
   props: ["stonk", "tradetype", "isGrouped"],
   name: "BaseCard",
   components: {
     BasePercentChange,
-    BaseButton
+    BaseButton,
+    BaseChart
   },
   emits: ["btnClick"],
   setup(props, { emit }) {
@@ -168,32 +164,6 @@ export default {
   background: $theme1-primary-800;
   color: $theme1-primary-400;
 }
-
-// .card-btn {
-//   display: inline-flex;
-//   justify-content: center;
-//   align-items: center;
-//   text-transform: uppercase;
-//   height: 30px;
-//   background: transparent;
-//   color: $theme1-primary-700;
-//   outline: none;
-//   border: 1px solid $theme1-primary-700;
-//   border-radius: 6px;
-//   padding: 2px 16px;
-//   font-weight: 500;
-//   cursor: pointer;
-//   transition: background 0.2s ease-out;
-
-//   &:hover {
-//     background: $light-primary-200;
-//     color: $light-accent-100;
-//   }
-
-//   &__icon {
-//     padding-right: 4px;
-//   }
-// }
 
 .card-title {
   font-size: 20px;

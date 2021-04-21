@@ -70,31 +70,23 @@
   <div id="modal-feedback" class="uk-flex-top" uk-modal>
     <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical feedback">
       <button class="uk-modal-close-default" type="button" uk-close></button>
-
+      <h2 class="uk-text-muted">Feedback</h2>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim.
+        Do you have any suggestions or found a bug? Please let me know.
       </p>
-      <div class="uk-margin">
-        <label class="uk-form-label" for="form-stacked-text">Text</label>
-        <input
-          class="uk-range"
-          type="range"
-          value="5"
-          min="0"
-          max="10"
-          step="1"
-        />
-      </div>
+      
       <div class="uk-margin">
         <textarea
+          v-model="feedbackText"
           class="uk-textarea"
           rows="5"
-          placeholder="Textarea"
+          placeholder="Your feedback..."
+          style="border-radius:10px"
         ></textarea>
       </div>
       <div class="uk-text-center">
         <a
+          @click="submitFeedback"
           href="#"
           class="uk-button uk-button-small uk-button-secondary uk-border-pill"
           >submit</a
@@ -111,17 +103,25 @@ import { ref, watchEffect } from "vue";
 export default {
   name: "BaseNav",
   props: ["user"],
-  emits: ["itemClick"],
+  emits: ["itemClick", "submitFeedback"],
   components: {
     FontAwesomeIcon,
   },
   setup(props, { emit }) {
     const store = useStore();
     const user1 = ref({});
+    const feedbackText = ref("");
 
     const btnHandler = (e) => {
       let val = e.target.innerText.trim();
       emit("itemClick", val);
+    };
+
+    const submitFeedback = () => {
+      if (feedbackText.value) {
+        emit("submitFeedback", feedbackText.value);
+        UIkit.modal("#modal-feedback").hide();
+      }
     };
 
     watchEffect(() => {
@@ -129,7 +129,7 @@ export default {
       // console.log(user1.value, store.state.userProfile);
     });
 
-    return { btnHandler };
+    return { btnHandler, feedbackText, submitFeedback };
   },
 };
 </script>
@@ -220,5 +220,9 @@ li:not(:first-child) {
   font-weight: 600;
   font-size: 14px;
   text-transform: uppercase;
+}
+
+#modal-feedback {
+  color: $theme1-danger-300;
 }
 </style>

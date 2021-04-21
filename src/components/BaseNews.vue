@@ -12,19 +12,20 @@
     >
       <div v-for="item in news" :key="item.uuid">
         <div class="uk-card uk-card-default news-card">
-          <div class="uk-card-media-top">
+          <div v-if="item.urlToImage" class="uk-card-media-top">
             <img :src="item.urlToImage" alt="" />
           </div>
           <div class="uk-card-body">
             <div class="news-card-title">
-              {{ item.title }}
+              <a target="_blank" :href="item.link">{{ item.title }}</a>
             </div>
 
             <div class="news-card-description">
-              {{ item.description }}
+              {{ item.publisher }} |
+              {{ formatDate(item.providerPublishTime * 1000) }}
             </div>
 
-            <BaseButton text="read more" size="small" color="light" />
+            <!-- <BaseButton text="read more" size="small" color="light" /> -->
           </div>
         </div>
       </div>
@@ -45,10 +46,10 @@ export default {
   setup() {
     const news = ref([]);
 
-    const getNews = async (query = "gamestop") => {
-      let result = await stocks.searchNews(query);
+    const getNews = async (query) => {
+      let result = await stocks.searchSome(query);
       console.log(result);
-      news.value = result.articles;
+      news.value = result.news;
     };
 
     onMounted(() => {
@@ -62,6 +63,14 @@ export default {
 
 <style lang="scss" scoped>
 @import "../styles/global.scss";
+
+a {
+  color: $theme1-primary-800;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
 
 .news-header {
   color: $theme1-primary-800;

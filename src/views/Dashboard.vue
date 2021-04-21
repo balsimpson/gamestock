@@ -1,10 +1,18 @@
 <template>
   <div class="uk-container">
-    <BaseNav @itemClick="navClick" :user="user" />
+    <BaseNav
+      @itemClick="navClick"
+      @submitFeedback="logFeedback($event)"
+      :user="user"
+    />
 
     <!-- Search -->
     <div class="uk-margin uk-container uk-container-small">
-      <BaseSearch @searchQuery="doSearch($event)" @clearResults="clearResults()" placeholder="e.g. GME" />
+      <BaseSearch
+        @searchQuery="doSearch($event)"
+        @clearResults="clearResults()"
+        placeholder="e.g. GME"
+      />
       <BaseSearchResults
         v-if="searchResults"
         @showModal="showModal"
@@ -22,7 +30,6 @@
     <BasePortfolio @showModal="showModal" :stonks="stonks" />
   </div>
   <BaseModal :stonk="stonk" :tradetype="tradetype" />
-  
 </template>
 
 <script>
@@ -38,7 +45,11 @@ import BaseModal from "@/components/BaseModal.vue";
 
 import BaseChart from "@/components/BaseChart";
 import stocks from "@/composables/fetchStocks";
-import { sortArrayOfObjects } from "@/composables/useUtils";
+import {
+  notify,
+  submitFeedback,
+  sortArrayOfObjects,
+} from "@/composables/useUtils";
 
 export default {
   components: {
@@ -75,11 +86,17 @@ export default {
     };
 
     const navClick = (e) => {
-      console.log(e);
-
       if (e === "SIGN OUT") {
         store.dispatch("signOut");
       }
+    };
+
+    const logFeedback = (val) => {
+      submitFeedback(store.state.userProfile.email, val);
+
+      // notify
+      let msg = `Hey ${store.state.userProfile.name.split(" ")[0]},  Thank you for your feedback. `;
+      notify(msg, "success");
     };
 
     const countChange = (e) => {
@@ -125,7 +142,7 @@ export default {
 
     const clearResults = () => {
       searchResults.value = [];
-    }
+    };
 
     watchEffect(() => {
       user.value = store.state.userProfile;
@@ -163,6 +180,7 @@ export default {
       groupBySymbol,
       closeModal,
       navClick,
+      logFeedback,
     };
   },
 };

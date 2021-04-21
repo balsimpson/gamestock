@@ -67,15 +67,15 @@ const fb = {
   },
 
   /**
-   * @param {object} data object with data
-   * @param {string} data.email user email
-   * @param { capital: true } data.updateData data to update
+   * @param { capital: true } data data to update
+   * @param {string} userEmail user email
    * @returns
    */
   async updateUser(data, userEmail) {
     let itemRef = apes.doc(userEmail);
     return await itemRef.update(data);
   },
+
   async deleteUser(userEmail) {
     let itemRef = apes.doc(userEmail);
     return await itemRef.delete();

@@ -7,12 +7,11 @@
 <script>
 import Chart from "chart.js";
 import { onMounted, computed, ref, watchEffect } from "vue";
-import { mapState, mapGetters, useStore } from "vuex";
+import { useStore } from "vuex";
 
 export default {
   props: {
-    labels: Array,
-    data: Array,
+    chart: Object,
     title: String
   },
   setup(props) {
@@ -20,18 +19,19 @@ export default {
     const stonks = ref([]);
     const createChart = (labels, data, title) => {
       const ctx = document.getElementById("stock-chart");
-      let chart = chartOptions(labels, data, title);
+      let chart = chartOptions(props.chart.labels, props.chart.data, title);
+      
       const myChart = new Chart(ctx, {
         type: chart.type,
-        data: chart.data,
+        data: props.chart.data,
         options: chart.options,
       });
     };
 
     watchEffect(() => {
-      stonks.value = store.state.portfolio;
-      console.log('store', store.state.portfolio[0].chart.value);
-      createChart(store.state.portfolio[0].chart.labels, store.state.portfolio[0].chart.data, props.title);
+      // stonks.value = store.state.portfolio;
+      // console.log('chart', props.chart);
+      // createChart(store.state.portfolio[0].chart.labels, store.state.portfolio[0].chart.data, props.title);
     });
 
     onMounted(() => {
@@ -52,12 +52,12 @@ const chartOptions = (labels, data, title) => {
           // one line graph
           label: "High",
           data: data,
-          backgroundColor: ["transparent"],
-          borderColor: ["rgba(54,73,93,.8)"],
+          backgroundColor: ["blue"],
+          borderColor: ["rgba(54,73,93,1)"],
           borderWidth: 5,
           pointBorderWidth: 3,
-          // showLine: false
-          // fill: true
+          showLine: true,
+          fill: true
         },
       ],
     },

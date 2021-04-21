@@ -11,13 +11,15 @@
       align="left"
       :oldVal="capital"
       :newVal="investment"
+      :count_company="count_company"
+      :count_shares="count_shares"
       :stonks="stonks"
     />
 
     <DashboardWallet
       title="Wallet"
       :value="wallet"
-      :subtitle="trades.length  + ' trades'"
+      :subtitle="trades.length + ' trades'"
       icon="wallet"
       align="right"
     />
@@ -32,7 +34,7 @@
 
     <!-- List and Gallery Views -->
     <div class="uk-width-auto uk-text-nowrap">
-      <span :class="{ 'active': galleryView }" class="view-icons">
+      <span :class="{ active: galleryView }" class="view-icons">
         <FontAwesomeIcon
           icon="th-large"
           style="margin-right: 18px; cursor: pointer"
@@ -40,7 +42,7 @@
           @click.prevent="changeView('gallery')"
         />
       </span>
-      <span :class="{ 'active': listView }" class="view-icons">
+      <span :class="{ active: listView }" class="view-icons">
         <FontAwesomeIcon
           icon="list-alt"
           uk-tooltip="List View"
@@ -78,10 +80,12 @@
         <td class="uk-text-right">
           <!-- <div> -->
           <BaseButton
-            @btnClick="btnClick({
-              stonk: stonk, 
-              type: 'sell'
-            })"
+            @btnClick="
+              btnClick({
+                stonk: stonk,
+                type: 'sell',
+              })
+            "
             text="sell"
             size="small"
             type="filled"
@@ -101,7 +105,11 @@
     uk-grid
   >
     <div v-for="stonk in stonks" :key="stonk.id">
-      <BaseCard @btnClick="btnClick($event)" :stonk="stonk" :isGrouped="isGrouped" />
+      <BaseCard
+        @btnClick="btnClick($event)"
+        :stonk="stonk"
+        :isGrouped="isGrouped"
+      />
     </div>
   </div>
 
@@ -154,6 +162,10 @@ export default {
     const capital = ref(0);
     // investment at current market price
     const investment = ref(0);
+
+    const count_company = ref(0);
+    const count_shares = ref(0);
+
     const isGrouped = ref();
 
     const stonk = ref();
@@ -176,7 +188,6 @@ export default {
     //   stonk.value = data.stonk.value;
     //   tradetype.value = data.type;
 
-      
     //   UIkit.modal("#modal").show();
     // };
 
@@ -191,7 +202,7 @@ export default {
     };
 
     const btnClick = (data, type) => {
-      console.log('PortfolioData', data, type);
+      console.log("PortfolioData", data, type);
       emit("showModal", data);
     };
 
@@ -210,15 +221,11 @@ export default {
     watchEffect(() => {
       wallet.value = Number(store.state.wallet);
       trades.value = store.state.trades;
-      investment.value = store.state.portfolio.reduce(
-        (prev, next) => prev + Number(next.market_price) * Number(next.shares),
-        0
-      );
-      capital.value = store.state.portfolio.reduce(
-        (prev, next) => prev + Number(next.bought_price) * Number(next.shares),
-        0
-      );
-      isGrouped.value = store.state.isGrouped;
+      investment.value = store.state.investment;
+      capital.value = store.state.capital;
+      count_company.value = store.state.count_company;
+      count_shares.value = store.state.count_shares;
+      // isGrouped.value = store.state.isGrouped;
       // groupedStonks.value = groupBySymbolHandler()
     });
 
@@ -229,6 +236,8 @@ export default {
       groupedStonks,
       capital,
       investment,
+      count_company,
+      count_shares,
       btnClick,
       switchValueChange,
       formatDate,

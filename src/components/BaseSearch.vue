@@ -2,6 +2,7 @@
   <!-- <div class="uk-container"> -->
 
     <div class="uk-margin">
+      <div class="uk-margin-small-bottom">Search for a company or symbol</div>
       <form @submit.prevent="emitSearch" class="uk-search uk-search-large">
         <a
           @click.prevent="emitSearch"

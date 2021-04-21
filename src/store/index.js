@@ -13,6 +13,7 @@ const store = createStore({
     portfolio: [],
     trades: [],
     investment: 0,
+    capital: 0,
     wallet: 0,
     isGrouped: false
   },
@@ -32,7 +33,12 @@ const store = createStore({
       state.portfolio = val;
     },
     setInvestment(state, val) {
-      state.investment = val;
+      state.investment = val.investment;
+      state.capital = val.capital;
+      state.profit = val.profit;
+      state.count_company = val.count_company;
+      state.count_shares = val.count_shares;
+
     },
     setWallet(state, val) {
       state.wallet = val;
@@ -104,7 +110,7 @@ const store = createStore({
       }
     },
 
-    async portfolioObserverHandler({ commit }, user) {
+    async portfolioObserverHandler({ commit, dispatch }, user) {
       const docs = apes
         .doc(user.email)
         .collection("portfolio")
@@ -138,6 +144,7 @@ const store = createStore({
           // console.log(portfolio);
           portfolio = sortArrayOfObjects(portfolio, "date", false);
           commit("setPortfolio", portfolio);
+          dispatch("calculatePortfolio");
         });
       } catch (error) {
         console.log(error.message);
@@ -165,7 +172,7 @@ const store = createStore({
               alltrades.push(doc);
             }
           }),
-          commit("setTrades", alltrades);
+            commit("setTrades", alltrades);
           // console.log('trade add', store.state.trades);
         });
       } catch (error) {
@@ -188,7 +195,9 @@ const store = createStore({
         let res = await fb.addUser(newuser);
 
         // notify
-        let msg = `Hi ${user.name.split(" ")[0]}! Welcome to Paperhand.`;
+        let msg = `Hi ${
+          user.name.split(" ")[0]
+        }! Welcome to Paperhand. Your wallet has been credited 10,000. Go forth and multiply.`;
         notify(msg, "success");
 
         commit("setUserProfile", user);
@@ -242,8 +251,52 @@ const store = createStore({
     async isGroupedHandler({ getters, commit }, data) {
       commit("setIsGrouped", data.isGrouped);
       await fb.updateUser(data, getters.getUser.email);
+    },
+
+    // Calculate investment, capital and profit
+    async calculatePortfolio({ getters, commit }) {
+
+      const getCountCompany = () => {
+        let grouped = groupBy(store.state.portfolio, "symbol");
+        return Object.keys(grouped).length;
+      };
+
+      const getCountShares = () => {
+        return store.state.portfolio.reduce(
+          (prev, next) => prev + Number(next.shares),
+          0
+        );
+      };
+
+      let investment = store.state.portfolio.reduce(
+        (prev, next) => prev + Number(next.market_price) * Number(next.shares),
+        0
+      );
+
+      let capital = store.state.portfolio.reduce(
+        (prev, next) => prev + Number(next.bought_price) * Number(next.shares),
+        0
+      );
+
+      let profit = investment - capital;
+      let count_company = getCountCompany();
+      let count_shares = getCountShares();
+
+      let data = { capital, investment, profit, count_company, count_shares };
+      console.log("data", data);
+      commit("setInvestment", data);
+      await fb.updateUser(data, getters.getUser.email);
+      // return { capital, investment, profit };
+
+      
+
+      function groupBy(xs, key) {
+        return xs.reduce(function(rv, x) {
+          (rv[x[key]] = rv[x[key]] || []).push(x);
+          return rv;
+        }, {});
+      }
     }
-    // get stock details by ID
   },
 
   modules: {}

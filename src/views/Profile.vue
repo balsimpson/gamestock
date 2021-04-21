@@ -1,6 +1,6 @@
 <template>
   <div class="uk-container">
-    <BaseNav :user="user" />
+    <BaseNav @itemClick="navClick" :user="user" />
 
     <div class="uk-container uk-margin-large-top">
       <div>
@@ -15,13 +15,11 @@
             class="uk-input uk-width-1-3 uk-text-bold uk-text-center uk-border-pill"
           />
         </div>
-        
       </div>
     </div>
 
-    <BaseTable />
+    <BaseTable title="Your last 10 trades" />
   </div>
-
 </template>
 
 <script>
@@ -43,17 +41,26 @@ export default {
   setup() {
     const store = useStore();
     const user = ref();
+    const trades = ref();
     const nickname = computed(() => {
-      
-      if (store.state && store.state.userProfile && store.state.userProfile.nickname) {
+      if (
+        store.state &&
+        store.state.userProfile &&
+        store.state.userProfile.nickname
+      ) {
         return store.state.userProfile.nickname;
       } else if (store.state && store.state.userProfile.name) {
         return store.state?.userProfile.name.split(" ")[0];
       }
-
     });
 
-    const trades = ref();
+    const navClick = (e) => {
+      console.log(e);
+
+      if (e === "SIGN OUT") {
+        store.dispatch("signOut");
+      }
+    };
 
     watchEffect(() => {
       trades.value = store.state.trades;
@@ -66,6 +73,7 @@ export default {
       user,
       nickname,
       formatDate,
+      navClick
     };
   },
 };

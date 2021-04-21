@@ -85,9 +85,14 @@ const sortArrayOfObjects = (arr, key, sortAscending, type = "number") => {
 
 // Diamond calculator
 const diamondCalculator = timeInMs => {
+
+
   // for every 48 hours you hold a stock, you get 1 diamond per share
-  // if you have 30 shares you'll get 30 diamonds
-  // for every 10 diamonds you get 100
+	// if you have 30 shares you'll get 30 diamonds
+	// for every 10 diamonds you get 100
+	let diff = Date.now() - timeInMs;
+	let minutes = (diff/1000)/60;
+	console.log(minutes/60)
 };
 
 const groupBySymbolHandler = () => {
@@ -148,4 +153,21 @@ const groupBy = (xs, key) => {
   }, {});
 };
 
-export { formatDate, notify, sortArrayOfObjects };
+/**
+ * Log feedback on Google Sheets
+ * @param {string} email User email
+ * @param {string} feedback feedback text
+ */
+async function submitFeedback(email, feedback) {
+  let url = `https://tinkr.api.stdlib.com/paperhand@dev/?email=${email}&feedback=${feedback}`;
+  let res = await doFetch(url);
+}
+
+async function doFetch(url) {
+  let res = await fetch(url);
+  let result = await res.json();
+
+  return result;
+}
+
+export { formatDate, submitFeedback, notify, sortArrayOfObjects };

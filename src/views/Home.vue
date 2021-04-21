@@ -8,10 +8,10 @@
         <div class="uk-flex uk-flex-middle uk-text-center">
           <div>
             <div class="hero-headline">
-              Are your hands made of <span>paper </span> or <span>diamond </span>?
+              Stock trading <span>Simulator </span>
             </div>
             <div class="hero-text">
-              Find out in this <strong>fantasy stock simulator</strong> based on real time prices. The longer you hold a stock, more diamonds you get. <strong>Test your market understanding</strong> by trading your favourite stocks, without any of the risk.
+              Test your <strong>market</strong> understanding and hunches by practising your trading based on real time market prices. Or maybe you want to support your fellow apes on their trip to the moon. Just sign in to get started.
               <BaseButton
                 style="margin: 0 auto; margin-top: 20px"
                 @btnClick="getStarted()"
@@ -27,7 +27,7 @@
 
         <!-- hero image -->
         <div class="uk-visible@s">
-          <img src="../assets/chartminions.svg" alt="" />
+          <img src="../assets/taken.svg" alt="" />
         </div>
       </div>
     </div>

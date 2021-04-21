@@ -1,5 +1,11 @@
 <template>
-  <div class="uk-container uk-container-small uk-margin-large-top">
+  <div
+    class="uk-container uk-container-small uk-margin-large-top uk-overflow-auto"
+  >
+    <div class="uk-text-bold uk-text-uppercase uk-margin-large-top">
+      {{ title }}
+    </div>
+    <hr />
     <!-- Trades List View -->
     <table
       v-if="trades"
@@ -7,26 +13,57 @@
     >
       <thead>
         <tr>
-          <th @click.prevent="sortTable('symbol', 'string')">Symbol</th>
-          <th @click.prevent="sortTable('name', 'string')" class="">Name</th>
-          <th @click.prevent="sortTable('shares')" class="uk-text-right">Shares</th>
-          <th @click.prevent="sortTable('bought_price')" class="uk-text-right">Paid Price</th>
-          <th @click.prevent="sortTable('market_price')" class="uk-text-right">Market Price</th>
-          <th @click.prevent="sortTable('exchangeName', 'string')" class="uk-text-right">Exchange</th>
-          <th @click.prevent="sortTable('date')" class="uk-text-right uk-width-small">
-            Date <a class="uk-icon-link uk-icon" href="#" :uk-icon="sortIcon" ></a>
+          <th
+            @click.prevent="sortTable('symbol', 'string')"
+            class="uk-table-shrink uk-text-left"
+          >
+            Symbol
+          </th>
+          <th
+            @click.prevent="sortTable('name', 'string')"
+            class="uk-table-shrink@m"
+          >
+            Name
+          </th>
+          <th
+            @click.prevent="sortTable('shares')"
+            class="uk-text-right uk-table-shrink"
+          >
+            Shares
+          </th>
+          <th
+            @click.prevent="sortTable('bought_price')"
+            class="uk-text-right uk-table-shrink"
+          >
+            Paid Price
+          </th>
+          <th
+            @click.prevent="sortTable('market_price')"
+            class="uk-text-right uk-table-shrink"
+          >
+            Market Price
+          </th>
+          <th
+            @click.prevent="sortTable('exchangeName', 'string')"
+            class="uk-text-right uk-table-shrink uk-visible@m"
+          >
+            Exchange
+          </th>
+          <th @click.prevent="sortTable('date')" class="uk-text-right">
+            Date
+            <a class="uk-icon-link uk-icon" href="#" :uk-icon="sortIcon"></a>
           </th>
           <th class="uk-text-right"></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="stonk in trades" :key="stonk.id">
-          <td class="uk-text-left">{{ stonk.symbol }}</td>
+          <td class="uk-table-shrink uk-text-left">{{ stonk.symbol }}</td>
           <td class="uk-text-left">{{ stonk.name }}</td>
           <td class="uk-text-right">{{ stonk.shares }}</td>
           <td class="uk-text-right">{{ stonk.bought_price }}</td>
-          <td class="uk-text-right">{{ stonk.market_price }}</td>
-          <td class="uk-text-right">{{ stonk.exchangeName }}</td>
+          <td class="uk-text-right">{{ showMarketPrice(stonk.market_price, stonk.tradeType) }}</td>
+          <td class="uk-text-right uk-visible@m">{{ stonk.exchangeName }}</td>
           <td class="uk-text-right">{{ formatDate(stonk.date, "short") }}</td>
           <td>
             <div class="item-tag">
@@ -45,6 +82,7 @@ import { useStore } from "vuex";
 import { formatDate, sortArrayOfObjects } from "@/composables/useUtils";
 
 export default {
+  props: ["title"],
   setup() {
     const store = useStore();
     const trades = ref();
@@ -53,20 +91,26 @@ export default {
 
     const sortTable = (key, sortType) => {
       sortAscending.value = !sortAscending.value;
-      sortIcon.value = sortAscending.value ? `icon: arrow-up` : `icon: arrow-down`;
+      sortIcon.value = sortAscending.value
+        ? `icon: arrow-up`
+        : `icon: arrow-down`;
       sortArrayOfObjects(trades.value, key, sortAscending.value, sortType);
+    };
+
+    const showMarketPrice = (market_) => {
+
     }
 
     onMounted(() => {
       sortIcon.value = `icon: arrow-down`;
-      sortArrayOfObjects(trades.value, 'date', sortAscending.value);
-    })
+      sortArrayOfObjects(trades.value, "date", sortAscending.value);
+    });
 
     watchEffect(() => {
       trades.value = store.state.trades;
     });
 
-    return { trades, formatDate, sortTable, sortIcon };
+    return { trades, formatDate, showMarketPrice, sortTable, sortIcon };
   },
 };
 </script>
