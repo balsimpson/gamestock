@@ -11,13 +11,13 @@ import "firebase/analytics";
 import store from "../store";
 
 const config = {
-  apiKey: "AIzaSyCpA7LEwcvW8hg1eNBxxWm1RoCmUbnLUYQ",
-  authDomain: "paperhand.firebaseapp.com",
-  projectId: "paperhand",
-  storageBucket: "paperhand.appspot.com",
-  messagingSenderId: "882595245751",
-  appId: "1:882595245751:web:388adcb2bc071955d52732",
-  measurementId: "G-4LZVYTY36X"
+  apiKey: "AIzaSyCpA7LEwcvW8hg1eNBxxWm1Ro******",
+  authDomain: "xxxxx.firebaseapp.com",
+  projectId: "xxxxx",
+  storageBucket: "xxxxxx.appspot.com",
+  messagingSenderId: "88259524XXXX",
+  appId: "1:882595245751:web:388adcb2bc071955XXXXXX",
+  measurementId: "G-4LZVYXXXX"
 };
 
 const firebaseService = firebase.initializeApp(config);
