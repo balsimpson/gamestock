@@ -1,4 +1,4 @@
-# gamestock
+# gamestock - nuxt version
 
 ## Project setup
 ```
